@@ -31,11 +31,11 @@ npm run dev
 
 ### Summary and social links
 
-Edit [`data/site.ts`](/Users/samueladepoju/Documents/newpotoCodex/data/site.ts).
+Edit [`data/site.json`](/Users/samueladepoju/Documents/newpotoCodex/data/site.json).
 
 ### Design showcase items
 
-Edit [`data/showcase.ts`](/Users/samueladepoju/Documents/newpotoCodex/data/showcase.ts).
+Edit [`data/showcase.json`](/Users/samueladepoju/Documents/newpotoCodex/data/showcase.json).
 
 ### Live projects
 
@@ -62,6 +62,50 @@ Inside the body you can use normal Markdown plus:
 - `<ContentImage src="" alt="" caption="" />`
 - `<Callout title="">...</Callout>`
 
+## Admin editor
+
+The site now includes a simple built-in admin at `/admin`.
+
+### What you can edit
+
+- Homepage metadata, hero title, subtitle, intro, and paragraph copy
+- Top navigation and contact links
+- Accent link colors
+- Design showcase entries
+- Project frontmatter and full MDX case study bodies
+- Image uploads into `public/images/...`
+
+### Local setup
+
+1. Copy [`.env.example`](/Users/samueladepoju/Documents/newpotoCodex/.env.example) to `.env.local`
+2. Set `ADMIN_PASSWORD` to the password you want to use
+3. Set `ADMIN_SECRET` to any long random string
+4. Run `npm run dev`
+5. Open `/admin`
+
+### Production setup on Vercel
+
+To let the admin save changes in production, add these environment variables in Vercel:
+
+- `ADMIN_PASSWORD`
+- `ADMIN_SECRET`
+- `GITHUB_ADMIN_TOKEN`
+- `GITHUB_REPO_OWNER`
+- `GITHUB_REPO_NAME`
+- `GITHUB_REPO_BRANCH`
+
+The `GITHUB_ADMIN_TOKEN` should be a GitHub token with write access to the repository contents. When you save from `/admin`, the app commits the updated file back to GitHub and Vercel redeploys automatically from `main`.
+
+### Uploading images
+
+Use the Uploads tab in `/admin`. After upload, copy the returned path such as:
+
+```txt
+/images/uploads/my-image.png
+```
+
+Then paste that path into the project, showcase, or other image fields you want to update.
+
 ## File structure
 
 - `app` for routes, layout, metadata, and Open Graph image generation
@@ -83,6 +127,7 @@ Then deploy the repository to your preferred Next.js host.
 
 ## Architecture notes
 
-- The hero summary, social links, and showcase entries live in central data files so content is easy to update without digging through components.
+- The hero summary, social links, and showcase entries live in central JSON data files so content is easy to update without digging through components.
 - Project metadata is stored in MDX frontmatter, making each case study the source of truth for both the homepage listing and its detail page.
 - The dark theme uses a softened full-page ambient image layer with overlays, while light mode intentionally strips back to a quieter plain background.
+- The built-in `/admin` editor is password-protected and can save locally in development or commit back to GitHub in production.

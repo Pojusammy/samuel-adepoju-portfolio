@@ -3,23 +3,35 @@ export type SocialLink = {
   href: string;
 };
 
+export type SiteMeta = {
+  title: string;
+  description: string;
+  url: string;
+};
+
 export type AccentLink = SocialLink & {
   color: string;
   darkColor: string;
 };
 
-export type InlineSegment =
-  | {
-      type: "text";
-      value: string;
-    }
-  | {
-      type: "link";
-      label: string;
-      href: string;
-    };
+export type HeroContent = {
+  title: string;
+  subtitle: string;
+};
 
-export type SummaryParagraph = InlineSegment[];
+export type ContactContent = {
+  intro: string;
+};
+
+export type SiteContent = {
+  siteMeta: SiteMeta;
+  hero: HeroContent;
+  contact: ContactContent;
+  socialLinks: SocialLink[];
+  topBarLinks: SocialLink[];
+  accentLinks: AccentLink[];
+  heroSummary: string[];
+};
 
 export type ShowcaseItem = {
   slug: string;
@@ -33,6 +45,20 @@ export type ShowcaseItem = {
     src: string;
     alt: string;
   };
+};
+
+export type EditableProject = {
+  slug: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  thumbnail: string;
+  thumbnailAlt: string;
+  coverImage?: string;
+  coverAlt?: string;
+  liveUrl?: string;
+  role?: string;
+  body: string;
 };
 
 export type ProjectFrontmatter = {

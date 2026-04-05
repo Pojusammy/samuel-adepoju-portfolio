@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { accentLinks } from "@/data/site";
-import type { SummaryParagraph } from "@/lib/types";
 
-export function RichText({ paragraph }: { paragraph: SummaryParagraph }) {
+const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+export function RichText({ paragraph }: { paragraph: string }) {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
@@ -26,28 +27,33 @@ export function RichText({ paragraph }: { paragraph: SummaryParagraph }) {
 
   return (
     <>
-      {paragraph.map((segment, index) =>
-        segment.type === "text" ? (
-          <span key={`${segment.type}-${index}`}>{segment.value}</span>
-        ) : (
-          (() => {
-            const accent = accentLinks.find((item) => item.label === segment.label);
+      {paragraph.split(linkPattern).reduce<React.ReactNode[]>((nodes, segment, index, parts) => {
+        if (index % 3 === 0) {
+          if (segment) nodes.push(<span key={`text-${index}`}>{segment}</span>);
+          return nodes;
+        }
 
-            return (
-              <Link
-                key={`${segment.type}-${segment.label}-${index}`}
-                href={segment.href}
-                className="underline decoration-current underline-offset-[0.18em] transition-opacity hover:opacity-80"
-                style={{ color: theme === "dark" ? accent?.darkColor : accent?.color }}
-                target={segment.href.startsWith("http") ? "_blank" : undefined}
-                rel={segment.href.startsWith("http") ? "noreferrer" : undefined}
-              >
-                {segment.label}
-              </Link>
-            );
-          })()
-        ),
-      )}
+        if (index % 3 === 1) {
+          const href = parts[index + 1];
+          const accent = accentLinks.find((item) => item.label === segment || item.href === href);
+
+          nodes.push(
+            <Link
+              key={`link-${segment}-${index}`}
+              href={href}
+              className="underline decoration-current underline-offset-[0.18em] transition-opacity hover:opacity-80"
+              style={{ color: theme === "dark" ? accent?.darkColor : accent?.color }}
+              target={href.startsWith("http") ? "_blank" : undefined}
+              rel={href.startsWith("http") ? "noreferrer" : undefined}
+            >
+              {segment}
+            </Link>,
+          );
+          return nodes;
+        }
+
+        return nodes;
+      }, [])}
     </>
   );
 }

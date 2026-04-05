@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { useRef } from "react";
 
 import { RichText } from "@/components/rich-text";
-import { heroSummary } from "@/data/site";
+import { heroContent, heroSummary } from "@/data/site";
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
@@ -47,10 +47,10 @@ export function Hero() {
           />
         </div>
         <h1 className="mt-4 text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-foreground">
-          Samuel Adepoju
+          {heroContent.title}
         </h1>
         <p className="mt-4 text-[15.5px] leading-[26px] text-foreground-muted">
-          Designing clarity in complex systems
+          {heroContent.subtitle}
         </p>
       </motion.div>
 
