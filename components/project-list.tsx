@@ -15,16 +15,21 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
   const reduceMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const groupedProjects = useMemo(() => {
-    return projects.reduce<Record<string, ProjectFrontmatter[]>>((acc, project) => {
-      const year = new Date(project.date).getFullYear().toString();
-      acc[year] ??= [];
-      acc[year].push(project);
-      return acc;
-    }, {});
-  }, [projects]);
+  const rows = useMemo(() => {
+    let previousYear: string | null = null;
 
-  const years = Object.keys(groupedProjects).sort((a, b) => Number(b) - Number(a));
+    return projects.map((project) => {
+      const year = new Date(project.date).getFullYear().toString();
+      const showYear = year !== previousYear;
+      previousYear = year;
+
+      return {
+        project,
+        year,
+        showYear,
+      };
+    });
+  }, [projects]);
 
   return (
     <div ref={containerRef} className="relative">
@@ -55,44 +60,55 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
       </div>
 
       <div className="border-t border-line">
-        {years.map((year) => (
-          <div key={year} className="grid grid-cols-[44px_minmax(0,1fr)] gap-4 py-0 sm:grid-cols-[56px_1fr] sm:gap-8">
-            <div className="pt-3 text-[13px] leading-5 text-foreground-faint">{year}</div>
+        {rows.map(({ project, year, showYear }) => (
+          <div
+            key={project.slug}
+            className="grid grid-cols-[44px_minmax(0,1fr)] gap-4 py-0 sm:grid-cols-[56px_1fr] sm:gap-8"
+          >
+            <div className="pt-3 text-[13px] leading-5 text-foreground-faint">
+              {showYear ? year : ""}
+            </div>
             <div>
-              {groupedProjects[year].map((project, index) => (
-                <Link
-                  key={project.slug}
-                  href={`/projects/${project.slug}`}
-                  className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-line py-[14px] sm:gap-4"
-                  onMouseEnter={(event) => {
-                    const containerRect = containerRef.current?.getBoundingClientRect();
-                    const parentTop = containerRect?.top ?? 0;
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    const defaultLeft = containerRect ? containerRect.width * 0.56 : 0;
-                    setHoverTop(rect.top - parentTop + rect.height / 2);
-                    setHoverLeft(defaultLeft);
-                    setHoveredProject(project);
-                  }}
-                  onMouseMove={(event) => {
-                    const containerRect = containerRef.current?.getBoundingClientRect();
-                    if (!containerRect) return;
-                    const x = event.clientX - containerRect.left;
-                    const y = event.currentTarget.getBoundingClientRect().top - containerRect.top + event.currentTarget.getBoundingClientRect().height / 2;
-                    const clampedX = Math.max(containerRect.width * 0.5, Math.min(containerRect.width * 0.72, x));
-                    setHoverLeft(clampedX);
-                    setHoverTop(y);
-                  }}
-                  onMouseLeave={() => setHoveredProject((current) => (current?.slug === project.slug ? null : current))}
-                >
-                  <div className="truncate pr-2 text-[13.5px] leading-[22px] text-foreground/80 transition-opacity duration-200 group-hover:opacity-75 sm:text-[15px]">
-                    {project.title}
-                  </div>
-                  <div className="text-[13px] leading-5 text-foreground-faint">
-                    {formatListDate(project.date)}
-                  </div>
-                  {index === groupedProjects[year].length - 1 ? <div className="col-span-full" /> : null}
-                </Link>
-              ))}
+              <Link
+                href={`/projects/${project.slug}`}
+                className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-line py-[14px] sm:gap-4"
+                onMouseEnter={(event) => {
+                  const containerRect = containerRef.current?.getBoundingClientRect();
+                  const parentTop = containerRect?.top ?? 0;
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  const defaultLeft = containerRect ? containerRect.width * 0.56 : 0;
+                  setHoverTop(rect.top - parentTop + rect.height / 2);
+                  setHoverLeft(defaultLeft);
+                  setHoveredProject(project);
+                }}
+                onMouseMove={(event) => {
+                  const containerRect = containerRef.current?.getBoundingClientRect();
+                  if (!containerRect) return;
+                  const x = event.clientX - containerRect.left;
+                  const y =
+                    event.currentTarget.getBoundingClientRect().top -
+                    containerRect.top +
+                    event.currentTarget.getBoundingClientRect().height / 2;
+                  const clampedX = Math.max(
+                    containerRect.width * 0.5,
+                    Math.min(containerRect.width * 0.72, x),
+                  );
+                  setHoverLeft(clampedX);
+                  setHoverTop(y);
+                }}
+                onMouseLeave={() =>
+                  setHoveredProject((current) =>
+                    current?.slug === project.slug ? null : current,
+                  )
+                }
+              >
+                <div className="truncate pr-2 text-[13.5px] leading-[22px] text-foreground/80 transition-opacity duration-200 group-hover:opacity-75 sm:text-[15px]">
+                  {project.title}
+                </div>
+                <div className="text-[13px] leading-5 text-foreground-faint">
+                  {formatListDate(project.date)}
+                </div>
+              </Link>
             </div>
           </div>
         ))}

@@ -52,14 +52,14 @@ export default async function HomePage() {
       </div>
 
       <Reveal>
-        <section id="live-projects" className="mt-20 border-t border-line pt-20">
+        <section id="live-projects" className="mt-14 pt-8">
           <SectionLabel>Live Projects</SectionLabel>
           <ProjectList projects={projects} />
         </section>
       </Reveal>
 
       <Reveal>
-        <section id="design-showcase" className="mt-20 border-t border-line pt-20">
+        <section id="design-showcase" className="mt-16 pt-8">
           <SectionLabel>Design Showcase</SectionLabel>
           <DesignShowcaseList items={showcaseItems} />
         </section>
