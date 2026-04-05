@@ -1,0 +1,21 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" fill="#111015"/>
+  <rect x="90" y="80" width="1420" height="840" rx="40" fill="url(#paint0_linear_1_2)"/>
+  <rect x="160" y="170" width="360" height="54" rx="27" fill="rgba(243,236,227,0.08)"/>
+  <rect x="160" y="270" width="550" height="120" rx="20" fill="rgba(243,236,227,0.1)"/>
+  <rect x="160" y="428" width="460" height="22" rx="11" fill="rgba(243,236,227,0.12)"/>
+  <rect x="160" y="472" width="620" height="22" rx="11" fill="rgba(243,236,227,0.08)"/>
+  <rect x="160" y="516" width="400" height="22" rx="11" fill="rgba(243,236,227,0.08)"/>
+  <rect x="930" y="190" width="420" height="520" rx="28" fill="rgba(243,236,227,0.09)"/>
+  <rect x="980" y="250" width="320" height="50" rx="18" fill="#D2B692"/>
+  <rect x="980" y="332" width="240" height="18" rx="9" fill="rgba(243,236,227,0.14)"/>
+  <rect x="980" y="378" width="250" height="180" rx="20" fill="rgba(17,16,21,0.52)"/>
+  <rect x="980" y="584" width="150" height="18" rx="9" fill="rgba(243,236,227,0.12)"/>
+  <rect x="160" y="642" width="600" height="180" rx="28" fill="rgba(17,16,21,0.4)"/>
+  <defs>
+    <linearGradient id="paint0_linear_1_2" x1="800" y1="80" x2="800" y2="920" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17151D"/>
+      <stop offset="1" stop-color="#0D0C10"/>
+    </linearGradient>
+  </defs>
+</svg>

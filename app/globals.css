@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f7f4;
+  --background-soft: #fbfbf8;
+  --surface: #ffffff;
+  --foreground: #18181b;
+  --foreground-soft: rgba(0, 0, 0, 0.72);
+  --foreground-muted: rgba(0, 0, 0, 0.45);
+  --foreground-faint: rgba(0, 0, 0, 0.38);
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.14);
+  --accent: #0354a6;
+  --accent-strong: #0354a6;
+  --selection: rgba(3, 84, 166, 0.14);
+  --shadow-soft: 0 16px 30px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] {
+  --background: #09090b;
+  --background-soft: #0f0f11;
+  --surface: #121214;
+  --foreground: #f5f5f4;
+  --foreground-soft: rgba(255, 255, 255, 0.72);
+  --foreground-muted: rgba(255, 255, 255, 0.45);
+  --foreground-faint: rgba(255, 255, 255, 0.38);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --accent: #63a3ff;
+  --accent-strong: #63a3ff;
+  --selection: rgba(99, 163, 255, 0.16);
+  --shadow-soft: 0 18px 34px rgba(0, 0, 0, 0.24);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-soft: var(--background-soft);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-foreground-soft: var(--foreground-soft);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-faint: var(--foreground-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --shadow-soft: var(--shadow-soft);
+  --font-sans: var(--font-inter);
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+a,
+button {
+  transition:
+    color 180ms var(--ease-premium),
+    opacity 180ms var(--ease-premium),
+    border-color 180ms var(--ease-premium),
+    background-color 180ms var(--ease-premium),
+    transform 180ms var(--ease-premium);
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 3px;
+}
+
+.site-link {
+  color: var(--accent-strong);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: currentColor;
+}
+
+.site-link:hover,
+.site-link:focus-visible {
+  opacity: 0.78;
+}
+
+.site-mark {
+  opacity: 0.8;
+}
+
+html[data-theme="dark"] .site-mark {
+  filter: invert(1);
+  opacity: 0.88;
+}
+
+.prose-editorial {
+  color: var(--foreground-soft);
+  font-size: 0.9375rem;
+  line-height: 1.875rem;
+}
+
+.prose-editorial > * + * {
+  margin-top: 1.4rem;
+}
+
+.prose-editorial h2,
+.prose-editorial h3 {
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  line-height: 1.18;
+  letter-spacing: -0.04em;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.prose-editorial h2 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+}
+
+.prose-editorial h3 {
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
+}
+
+.prose-editorial p,
+.prose-editorial li,
+.prose-editorial blockquote {
+  max-width: 42rem;
+}
+
+.prose-editorial ul,
+.prose-editorial ol {
+  padding-left: 1.25rem;
+}
+
+.prose-editorial li + li {
+  margin-top: 0.55rem;
+}
+
+.prose-editorial blockquote {
+  border-left: 1px solid var(--line-strong);
+  color: var(--foreground);
+  font-size: 1rem;
+  margin-left: 0;
+  padding-left: 1.2rem;
+}
+
+.prose-editorial hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 3rem 0;
+}
+
+.prose-editorial strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.prose-editorial a {
+  color: var(--accent-strong);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+.prose-editorial a:hover,
+.prose-editorial a:focus-visible {
+  color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
