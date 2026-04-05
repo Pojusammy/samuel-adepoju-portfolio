@@ -68,6 +68,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html[data-theme="dark"] body {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("/images/ambient/twilight-mist-over-rolling-hills.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
 ::selection {
   background: var(--selection);
 }

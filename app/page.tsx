@@ -24,8 +24,8 @@ export default async function HomePage() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-[680px] px-5 pb-24 pt-8 sm:px-0">
-      <div className="flex items-center py-8">
+    <main className="mx-auto w-full max-w-[680px] px-5 pb-24 pt-4 sm:px-0 sm:pt-8">
+      <div className="flex items-center py-5 sm:py-8">
         <div className="flex-1">
           <Link href="/" className="relative block size-6">
             <Image src="/images/figma/mark.svg" alt="Samuel Adepoju mark" fill className="site-mark object-contain" sizes="24px" />

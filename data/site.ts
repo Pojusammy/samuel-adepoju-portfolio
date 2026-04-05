@@ -8,21 +8,21 @@ export const siteMeta = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/samueladepoju/" },
-  { label: "X", href: "https://x.com/samueladepoju" },
-  { label: "Email", href: "mailto:samuel@samueladepoju.com" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/samueladepojutobi/" },
+  { label: "X", href: "https://x.com/Pojusammy_" },
+  { label: "Email", href: "mailto:adepojusamuel28@gmail.com" },
 ];
 
 export const topBarLinks: SocialLink[] = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/samueladepoju/" },
-  { label: "X", href: "https://x.com/samueladepoju" },
-  { label: "About", href: "#hero" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/samueladepojutobi/" },
+  { label: "X", href: "https://x.com/Pojusammy_" },
+  { label: "Email", href: "mailto:adepojusamuel28@gmail.com" },
 ];
 
 export const accentLinks: AccentLink[] = [
   {
     label: "Pangaea",
-    href: "https://www.pangaea.app/",
+    href: "https://www.pangaea.holdings/",
     color: "#0354A6",
     darkColor: "#66A9FF",
   },
@@ -40,19 +40,19 @@ export const accentLinks: AccentLink[] = [
   },
   {
     label: "Convo Hub",
-    href: "https://convohub.app/",
+    href: "https://www.theconvohub.com/",
     color: "#6018B2",
     darkColor: "#A56BFF",
   },
   {
     label: "Font Check",
-    href: "https://fontcheck.app/",
+    href: "https://fontchecker.vercel.app/",
     color: "#A81240",
     darkColor: "#F06A97",
   },
   {
     label: "NoteKeys",
-    href: "https://notekeys.app/",
+    href: "https://frontend-nine-sigma-73.vercel.app/",
     color: "#0D7A40",
     darkColor: "#43C37A",
   },
@@ -68,7 +68,7 @@ export const heroSummary: SummaryParagraph[] = [
   ],
   [
     { type: "text", value: "I started as the founding UX designer at " },
-    { type: "link", label: "Pangaea", href: "https://www.pangaea.app/" },
+    { type: "link", label: "Pangaea", href: "https://www.pangaea.holdings/" },
     {
       type: "text",
       value:
@@ -94,12 +94,12 @@ export const heroSummary: SummaryParagraph[] = [
     {
       type: "text",
       value:
-        ", a premium men’s grooming brand, I led the design of a quiz and recommendation platform that helped users make confident product decisions. This initiative drove a 10% conversion rate and generated over $5M in business value.",
+        ", a premium grooming brand, I led the design of a quiz and recommendation platform that helped users make confident product decisions. This initiative drove a 10% conversion rate and generated over $5M in business value.",
     },
   ],
   [
     { type: "text", value: "More recently, I led product design for " },
-    { type: "link", label: "Convo Hub", href: "https://convohub.app/" },
+    { type: "link", label: "Convo Hub", href: "https://www.theconvohub.com/" },
     {
       type: "text",
       value:
@@ -109,7 +109,7 @@ export const heroSummary: SummaryParagraph[] = [
   [{ type: "text", value: "Outside of my core work, I build and ship ideas." }],
   [
     { type: "text", value: "I created " },
-    { type: "link", label: "Font Check", href: "https://fontcheck.app/" },
+    { type: "link", label: "Font Check", href: "https://fontchecker.vercel.app/" },
     {
       type: "text",
       value:
@@ -118,7 +118,7 @@ export const heroSummary: SummaryParagraph[] = [
   ],
   [
     { type: "text", value: "I also built " },
-    { type: "link", label: "NoteKeys", href: "https://notekeys.app/" },
+    { type: "link", label: "NoteKeys", href: "https://frontend-nine-sigma-73.vercel.app/" },
     {
       type: "text",
       value:

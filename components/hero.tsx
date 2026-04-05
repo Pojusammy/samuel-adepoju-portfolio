@@ -38,7 +38,7 @@ export function Hero() {
       >
         <div className="relative size-[50px] overflow-hidden rounded-xl sm:size-[100px]">
           <Image
-            src="/images/figma/avatar.png"
+            src="/images/figma/avatar.jpg"
             alt="Samuel Adepoju portrait"
             fill
             priority
