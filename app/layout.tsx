@@ -55,10 +55,11 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body className={`${inter.variable} bg-background text-foreground`}>
+        <div aria-hidden="true" className="ambient-background" />
         <Script id="theme-script" strategy="beforeInteractive">
           {themeScript}
         </Script>
-        {children}
+        <div className="site-shell">{children}</div>
       </body>
     </html>
   );
