@@ -41,6 +41,12 @@ export type ShowcaseItem = {
   panelLabel: string;
   panelColor: string;
   panelTone?: "light" | "dark";
+  media?: {
+    type: "image" | "video";
+    src: string;
+    alt: string;
+    poster?: string;
+  };
   image?: {
     src: string;
     alt: string;

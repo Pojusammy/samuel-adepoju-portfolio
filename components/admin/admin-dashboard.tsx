@@ -82,6 +82,10 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
     }));
   }
 
+  function getShowcaseMedia(item: ShowcaseItem) {
+    return item.media ?? (item.image ? { type: "image" as const, ...item.image } : undefined);
+  }
+
   function updateActiveProject(mutator: (project: EditableProject) => EditableProject) {
     if (!activeProject) return;
     setProjects((current) =>
@@ -240,8 +244,94 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                       <Field compact label="Panel label" value={item.panelLabel} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, panelLabel: value } : entry))} />
                       <ColorField label="Panel color" value={item.panelColor} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, panelColor: value } : entry))} />
                       <Field compact label="Optional link" value={item.href ?? ""} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, href: value || undefined } : entry))} />
-                      <Field compact label="Image path" value={item.image?.src ?? ""} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, image: value ? { src: value, alt: entry.image?.alt ?? entry.title } : undefined } : entry))} />
-                      <Field compact label="Image alt" value={item.image?.alt ?? ""} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, image: entry.image ? { ...entry.image, alt: value } : { src: "", alt: value } } : entry))} />
+                      <SelectField
+                        label="Media type"
+                        value={getShowcaseMedia(item)?.type ?? "image"}
+                        options={[
+                          { label: "Image / GIF", value: "image" },
+                          { label: "Video", value: "video" },
+                        ]}
+                        onChange={(value: string) =>
+                          setShowcase((current) =>
+                            current.map((entry, itemIndex) =>
+                              itemIndex === index
+                                ? {
+                                    ...entry,
+                                    image: undefined,
+                                    media: {
+                                      type: value as "image" | "video",
+                                      src: getShowcaseMedia(entry)?.src ?? "",
+                                      alt: getShowcaseMedia(entry)?.alt ?? entry.title,
+                                      poster: value === "video" ? getShowcaseMedia(entry)?.poster : undefined,
+                                    },
+                                  }
+                                : entry,
+                            ),
+                          )
+                        }
+                      />
+                      <Field
+                        compact
+                        label="Media path"
+                        value={getShowcaseMedia(item)?.src ?? ""}
+                        onChange={(value) =>
+                          setShowcase((current) =>
+                            current.map((entry, itemIndex) =>
+                              itemIndex === index
+                                ? {
+                                    ...entry,
+                                    image: undefined,
+                                    media: getShowcaseMedia(entry)
+                                      ? { ...getShowcaseMedia(entry)!, src: value }
+                                      : { type: "image", src: value, alt: entry.title },
+                                  }
+                                : entry,
+                            ),
+                          )
+                        }
+                      />
+                      <Field
+                        compact
+                        label="Media alt"
+                        value={getShowcaseMedia(item)?.alt ?? ""}
+                        onChange={(value) =>
+                          setShowcase((current) =>
+                            current.map((entry, itemIndex) =>
+                              itemIndex === index
+                                ? {
+                                    ...entry,
+                                    image: undefined,
+                                    media: getShowcaseMedia(entry)
+                                      ? { ...getShowcaseMedia(entry)!, alt: value }
+                                      : { type: "image", src: "", alt: value },
+                                  }
+                                : entry,
+                            ),
+                          )
+                        }
+                      />
+                      {(getShowcaseMedia(item)?.type ?? "image") === "video" ? (
+                        <Field
+                          compact
+                          label="Poster image"
+                          value={getShowcaseMedia(item)?.poster ?? ""}
+                          onChange={(value) =>
+                            setShowcase((current) =>
+                              current.map((entry, itemIndex) =>
+                                itemIndex === index
+                                  ? {
+                                      ...entry,
+                                      image: undefined,
+                                      media: getShowcaseMedia(entry)
+                                        ? { ...getShowcaseMedia(entry)!, poster: value || undefined }
+                                        : { type: "video", src: "", alt: entry.title, poster: value || undefined },
+                                    }
+                                  : entry,
+                              ),
+                            )
+                          }
+                        />
+                      ) : null}
                     </div>
                     <div className="mt-3">
                       <label className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">
@@ -680,6 +770,35 @@ function ColorField({
           className="w-full border-none bg-transparent text-[14px] text-foreground outline-none"
         />
       </div>
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: { label: string; value: string }[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-2xl border border-line bg-background px-4 py-2.5 text-[14px] text-foreground outline-none"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }

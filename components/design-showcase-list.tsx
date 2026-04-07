@@ -10,14 +10,30 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
     <div className="space-y-12">
       {items.map((item) => (
         <article key={item.slug} className="pb-12">
+          {(() => {
+            const media = item.media ?? (item.image ? { type: "image" as const, ...item.image } : undefined);
+
+            return (
           <div
             className="relative h-[425px] w-full overflow-hidden rounded-[14px]"
             style={{ backgroundColor: item.panelColor }}
           >
-            {item.image ? (
+            {media?.type === "video" ? (
+              <video
+                src={media.src}
+                poster={media.poster}
+                aria-label={media.alt}
+                className="h-full w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+            ) : media?.type === "image" ? (
               <Image
-                src={item.image.src}
-                alt={item.image.alt}
+                src={media.src}
+                alt={media.alt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 680px"
@@ -44,6 +60,8 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
               </>
             )}
           </div>
+            );
+          })()}
           <div className="mt-3 space-y-1">
             <h3 className="text-[15px] font-medium leading-[22px] text-foreground/80">
               {item.title}
