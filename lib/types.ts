@@ -47,6 +47,27 @@ export type ShowcaseItem = {
   };
 };
 
+export type ProjectContentBlock =
+  | {
+      id: string;
+      type: "section";
+      title: string;
+      body: string;
+    }
+  | {
+      id: string;
+      type: "image";
+      src: string;
+      alt: string;
+      caption?: string;
+    }
+  | {
+      id: string;
+      type: "callout";
+      title: string;
+      body: string;
+    };
+
 export type EditableProject = {
   slug: string;
   title: string;
@@ -59,6 +80,7 @@ export type EditableProject = {
   liveUrl?: string;
   role?: string;
   body: string;
+  blocks?: ProjectContentBlock[];
 };
 
 export type ProjectFrontmatter = {

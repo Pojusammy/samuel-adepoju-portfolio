@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 
-import type { EditableProject, ShowcaseItem, SiteContent } from "@/lib/types";
+import type { EditableProject, ProjectContentBlock, ShowcaseItem, SiteContent } from "@/lib/types";
 
 type AdminData = {
   site: SiteContent;
@@ -80,6 +80,31 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
         itemIndex === index ? { ...item, [field]: value } : item,
       ),
     }));
+  }
+
+  function updateActiveProject(mutator: (project: EditableProject) => EditableProject) {
+    if (!activeProject) return;
+    setProjects((current) =>
+      current.map((project) =>
+        project.slug === activeProject.slug ? mutator(project) : project,
+      ),
+    );
+  }
+
+  function updateProjectBlocks(blocks: ProjectContentBlock[]) {
+    updateActiveProject((project) => ({ ...project, blocks }));
+  }
+
+  function addProjectBlock(type: ProjectContentBlock["type"]) {
+    const currentBlocks = activeProject?.blocks ?? [];
+    const nextBlock: ProjectContentBlock =
+      type === "image"
+        ? { id: crypto.randomUUID(), type: "image", src: "", alt: "", caption: "" }
+        : type === "callout"
+          ? { id: crypto.randomUUID(), type: "callout", title: "Callout", body: "" }
+          : { id: crypto.randomUUID(), type: "section", title: "New section", body: "" };
+
+    updateProjectBlocks([...currentBlocks, nextBlock]);
   }
 
   return (
@@ -272,7 +297,15 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                       excerpt: "",
                       thumbnail: "",
                       thumbnailAlt: "",
-                      body: "Write your project story here.",
+                      body: "",
+                      blocks: [
+                        {
+                          id: crypto.randomUUID(),
+                          type: "section",
+                          title: "Overview",
+                          body: "Write your project story here.",
+                        },
+                      ],
                     };
                     setProjects((current) => [newProject, ...current]);
                     setActiveProjectSlug(newProject.slug);
@@ -330,15 +363,165 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   />
                 </div>
                 <div className="mt-4">
-                  <label className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">
-                    MDX body
-                  </label>
-                  <textarea
-                    rows={20}
-                    value={activeProject.body}
-                    onChange={(event) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, body: event.target.value } : project))}
-                    className="min-h-[460px] w-full rounded-2xl border border-line bg-background px-4 py-3 font-mono text-[13px] leading-7 text-foreground outline-none"
-                  />
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="block text-xs uppercase tracking-[0.18em] text-foreground-faint">
+                      Project content blocks
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <SmallButton onClick={() => addProjectBlock("section")}>Add section</SmallButton>
+                      <SmallButton onClick={() => addProjectBlock("image")}>Add image</SmallButton>
+                      <SmallButton onClick={() => addProjectBlock("callout")}>Add callout</SmallButton>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {(activeProject.blocks ?? []).map((block, index) => (
+                      <div key={block.id} className="rounded-[22px] border border-line bg-background p-4">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-medium capitalize text-foreground">{block.type}</p>
+                            <p className="text-xs text-foreground-faint">Block {index + 1}</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <SmallButton
+                              onClick={() => {
+                                const blocks = [...(activeProject.blocks ?? [])];
+                                if (index > 0) {
+                                  [blocks[index - 1], blocks[index]] = [blocks[index], blocks[index - 1]];
+                                  updateProjectBlocks(blocks);
+                                }
+                              }}
+                            >
+                              Up
+                            </SmallButton>
+                            <SmallButton
+                              onClick={() => {
+                                const blocks = [...(activeProject.blocks ?? [])];
+                                if (index < blocks.length - 1) {
+                                  [blocks[index + 1], blocks[index]] = [blocks[index], blocks[index + 1]];
+                                  updateProjectBlocks(blocks);
+                                }
+                              }}
+                            >
+                              Down
+                            </SmallButton>
+                            <SmallButton
+                              onClick={() =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).filter((item) => item.id !== block.id),
+                                )
+                              }
+                            >
+                              Remove
+                            </SmallButton>
+                          </div>
+                        </div>
+
+                        {block.type === "section" ? (
+                          <div className="space-y-3">
+                            <Field
+                              compact
+                              label="Section title"
+                              value={block.title}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, title: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <TextAreaField
+                              label="Section description"
+                              value={block.body}
+                              rows={8}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, body: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                          </div>
+                        ) : null}
+
+                        {block.type === "image" ? (
+                          <div className="grid gap-3 md:grid-cols-2">
+                            <Field
+                              compact
+                              label="Image path"
+                              value={block.src}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, src: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <Field
+                              compact
+                              label="Image alt"
+                              value={block.alt}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, alt: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <div className="md:col-span-2">
+                              <TextAreaField
+                                label="Caption"
+                                value={block.caption ?? ""}
+                                rows={3}
+                                onChange={(value) =>
+                                  updateProjectBlocks(
+                                    (activeProject.blocks ?? []).map((item) =>
+                                      item.id === block.id ? { ...item, caption: value } : item,
+                                    ),
+                                  )
+                                }
+                              />
+                            </div>
+                          </div>
+                        ) : null}
+
+                        {block.type === "callout" ? (
+                          <div className="space-y-3">
+                            <Field
+                              compact
+                              label="Callout title"
+                              value={block.title}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, title: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <TextAreaField
+                              label="Callout description"
+                              value={block.body}
+                              rows={6}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, body: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                          </div>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-5 rounded-2xl border border-dashed border-line bg-background px-4 py-3 text-sm leading-6 text-foreground-muted">
+                    Use the Uploads tab first, then paste the returned image path into any image block.
+                  </div>
                 </div>
               </Card>
             ) : null}
@@ -498,6 +681,48 @@ function ColorField({
         />
       </div>
     </label>
+  );
+}
+
+function TextAreaField({
+  label,
+  value,
+  onChange,
+  rows = 5,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  rows?: number;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">{label}</span>
+      <textarea
+        rows={rows}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-2xl border border-line bg-background px-4 py-3 text-[14px] leading-7 text-foreground outline-none"
+      />
+    </label>
+  );
+}
+
+function SmallButton({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-full border border-line px-3 py-1.5 text-xs text-foreground-muted hover:border-line-strong hover:text-foreground"
+    >
+      {children}
+    </button>
   );
 }
 
