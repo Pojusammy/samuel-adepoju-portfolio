@@ -5,7 +5,12 @@
     "description": "A first-look flow built for Convo Hub, carefully designed to welcome users into a community product with clarity and warmth from the very beginning.",
     "panelLabel": "CONVO HUB ONBOARDING FLOW",
     "panelColor": "#1A0A2E",
-    "panelTone": "dark"
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "'/Users/samueladepoju/Documents/Note keys/my-video/out/NoteKeyDemo.mp4'",
+      "alt": "Convo Hub Onboarding Flow"
+    }
   },
   {
     "slug": "font-check-interface",
@@ -37,6 +42,14 @@
     "description": "Digital design assets created for the Lumin Skin website rebrand, focused on elevated visual quality and brand coherence.",
     "panelLabel": "LUMIN SKIN REBRAND ASSETS",
     "panelColor": "#080E1A",
+    "panelTone": "dark"
+  },
+  {
+    "slug": "",
+    "title": "",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
     "panelTone": "dark"
   }
 ]
