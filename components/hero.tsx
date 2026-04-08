@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { RichText } from "@/components/rich-text";
 import { heroContent, heroSummary } from "@/data/site";
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
+  const [isSecondParagraphExpanded, setIsSecondParagraphExpanded] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -100,14 +101,47 @@ export function Hero() {
         {heroSummary.map((paragraph, index) => (
           <motion.p
             key={index}
-            className="max-w-[42.5rem]"
+            className={`max-w-[42.5rem] ${index > 1 && !isSecondParagraphExpanded ? "hidden sm:block" : ""}`}
             variants={{
               hidden: { opacity: 0, y: 12 },
               visible: { opacity: 1, y: 0 },
             }}
             transition={{ duration: 0.68, ease: [0.22, 1, 0.36, 1] }}
           >
-            <RichText paragraph={paragraph} />
+            {index === 1 ? (
+              <>
+                <span className="hidden sm:inline">
+                  <RichText paragraph={paragraph} />
+                </span>
+                <span className="sm:hidden">
+                  <span
+                    className="block overflow-hidden"
+                    style={
+                      isSecondParagraphExpanded
+                        ? undefined
+                        : {
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            WebkitLineClamp: 3,
+                          }
+                    }
+                  >
+                    <RichText paragraph={paragraph} />
+                  </span>
+                  {!isSecondParagraphExpanded ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsSecondParagraphExpanded(true)}
+                      className="mt-2 inline-flex text-[13px] font-medium tracking-[-0.01em] text-foreground underline decoration-white/20 underline-offset-4 transition-colors hover:text-foreground-soft"
+                    >
+                      Read more
+                    </button>
+                  ) : null}
+                </span>
+              </>
+            ) : (
+              <RichText paragraph={paragraph} />
+            )}
           </motion.p>
         ))}
       </motion.div>

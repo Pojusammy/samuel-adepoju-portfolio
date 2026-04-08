@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ShowcaseItem } from "@/lib/types";
@@ -51,7 +49,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
 
             return (
               <motion.div
-                className="group relative h-[425px] w-full overflow-hidden rounded-[14px]"
+                className="group relative aspect-[1.58] w-full overflow-hidden rounded-[14px] sm:h-[425px] sm:aspect-auto"
                 style={{ backgroundColor: item.panelColor }}
                 whileHover={reduceMotion ? undefined : { y: -2 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -66,7 +64,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                       src={media.src}
                       poster={media.poster}
                       aria-label={media.alt}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover object-center"
                       autoPlay
                       muted
                       loop
@@ -78,7 +76,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                       src={media.src}
                       alt={media.alt}
                       fill
-                      className="object-cover"
+                      className="object-cover object-center"
                       sizes="(max-width: 768px) 100vw, 680px"
                     />
                   ) : (
