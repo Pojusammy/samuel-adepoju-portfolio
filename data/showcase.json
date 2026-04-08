@@ -89,5 +89,18 @@
       "src": "/images/showcase/loan-summary.png",
       "alt": "Loan confirmation flow"
     }
+  },
+  {
+    "slug": "plantpal",
+    "title": "PlantPal",
+    "description": "A minimal plant care reminder app for people who love their greens but forget when to water them.",
+    "panelLabel": "PlantPal",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/g4f8v0wxiaauqc9.jpeg",
+      "alt": "PlantPal"
+    }
   }
 ]
