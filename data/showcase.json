@@ -63,5 +63,18 @@
       "src": "/images/showcase/day-5-hd-chargeloop.png",
       "alt": "Chargeloop"
     }
+  },
+  {
+    "slug": "loan-eligibility-check",
+    "title": "Loan eligibility check",
+    "description": "A transparent and guided experience for loan applicants",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/loan-check.png",
+      "alt": "Loan eligibility check"
+    }
   }
 ]
