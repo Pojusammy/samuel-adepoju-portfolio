@@ -464,6 +464,13 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                 >
                   Add showcase item
                 </button>
+                <div className="flex justify-end pt-2">
+                  <SaveButton
+                    disabled={saving}
+                    onClick={() => save("showcase", showcase)}
+                    label={saving ? "Saving..." : "Save showcase"}
+                  />
+                </div>
               </div>
             </Card>
           </section>
@@ -885,6 +892,13 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   </div>
                   <div className="mt-5 rounded-2xl border border-dashed border-line bg-background px-4 py-3 text-sm leading-6 text-foreground-muted">
                     Upload directly inside each media block. Save the project after uploading so the live site picks up the new asset on the next deploy.
+                  </div>
+                  <div className="mt-6 flex justify-end">
+                    <SaveButton
+                      disabled={saving}
+                      onClick={() => save("project", activeProject)}
+                      label={saving ? "Saving..." : "Save project"}
+                    />
                   </div>
                 </div>
               </Card>
