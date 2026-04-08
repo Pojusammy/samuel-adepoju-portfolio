@@ -102,5 +102,18 @@
       "src": "/images/showcase/g4f8v0wxiaauqc9.jpeg",
       "alt": "PlantPal"
     }
+  },
+  {
+    "slug": "event-booking-app",
+    "title": "Event booking App",
+    "description": "",
+    "panelLabel": "Event booking App",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-13-event-booking.png",
+      "alt": "Event booking App"
+    }
   }
 ]
