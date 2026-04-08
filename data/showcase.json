@@ -76,5 +76,18 @@
       "src": "/images/showcase/loan-check.png",
       "alt": "Loan eligibility check"
     }
+  },
+  {
+    "slug": "loan-confirmation-flow",
+    "title": "Loan confirmation flow",
+    "description": "",
+    "panelLabel": "Loan confirmation flow",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/confirmation-flow.png",
+      "alt": "Loan confirmation flow"
+    }
   }
 ]
