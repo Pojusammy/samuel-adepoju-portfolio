@@ -5,9 +5,9 @@ import { PageHeader } from "@/components/page-header";
 import { ProjectList } from "@/components/project-list";
 import { Reveal } from "@/components/reveal";
 import { SectionLabel } from "@/components/section-label";
-import { showcaseItems } from "@/data/showcase";
 import { topBarLinks } from "@/data/site";
 import { getAllProjects } from "@/lib/projects";
+import { getShowcaseItems } from "@/lib/showcase";
 
 export default async function HomePage() {
   const projects = (await getAllProjects()).filter((project) =>
@@ -19,6 +19,7 @@ export default async function HomePage() {
       "pangaea-design-system",
     ].includes(project.slug),
   );
+  const showcaseItems = await getShowcaseItems();
 
   return (
     <main className="mx-auto w-full max-w-[680px] px-5 pb-24 pt-4 sm:px-0 sm:pt-8">
