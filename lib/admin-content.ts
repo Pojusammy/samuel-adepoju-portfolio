@@ -49,6 +49,23 @@ export function parseProjectBody(body: string): ProjectContentBlock[] {
       continue;
     }
 
+    if (line.startsWith('<ContentVideo ')) {
+      const src = line.match(/src="([^"]*)"/)?.[1] ?? "";
+      const title = line.match(/title="([^"]*)"/)?.[1] ?? "";
+      const caption = line.match(/caption="([^"]*)"/)?.[1];
+      const poster = line.match(/poster="([^"]*)"/)?.[1];
+      blocks.push({
+        id: createBlockId("video"),
+        type: "video",
+        src,
+        alt: title,
+        caption,
+        poster,
+      });
+      index += 1;
+      continue;
+    }
+
     if (line.startsWith("<Callout ")) {
       const title = line.match(/title="([^"]*)"/)?.[1] ?? "Callout";
       index += 1;
@@ -77,7 +94,12 @@ export function parseProjectBody(body: string): ProjectContentBlock[] {
 
       while (index < lines.length) {
         const nextLine = lines[index].trim();
-        if (nextLine.startsWith("## ") || nextLine.startsWith("<Callout ") || nextLine.startsWith('<ContentImage ')) {
+        if (
+          nextLine.startsWith("## ") ||
+          nextLine.startsWith("<Callout ") ||
+          nextLine.startsWith('<ContentImage ') ||
+          nextLine.startsWith('<ContentVideo ')
+        ) {
           break;
         }
         sectionLines.push(lines[index]);
@@ -96,7 +118,12 @@ export function parseProjectBody(body: string): ProjectContentBlock[] {
     const looseLines: string[] = [];
     while (index < lines.length) {
       const nextLine = lines[index].trim();
-      if (nextLine.startsWith("## ") || nextLine.startsWith("<Callout ") || nextLine.startsWith('<ContentImage ')) {
+      if (
+        nextLine.startsWith("## ") ||
+        nextLine.startsWith("<Callout ") ||
+        nextLine.startsWith('<ContentImage ') ||
+        nextLine.startsWith('<ContentVideo ')
+      ) {
         break;
       }
       looseLines.push(lines[index]);
@@ -129,6 +156,18 @@ export function serializeProjectBlocks(blocks: ProjectContentBlock[]) {
         return `<ContentImage src="${escapeAttribute(block.src.trim())}" alt="${escapeAttribute(
           block.alt.trim(),
         )}"${caption} />`;
+      }
+
+      if (block.type === "video") {
+        const caption = block.caption?.trim()
+          ? ` caption="${escapeAttribute(block.caption.trim())}"`
+          : "";
+        const poster = block.poster?.trim()
+          ? ` poster="${escapeAttribute(block.poster.trim())}"`
+          : "";
+        return `<ContentVideo src="${escapeAttribute(block.src.trim())}" title="${escapeAttribute(
+          block.alt.trim(),
+        )}"${poster}${caption} />`;
       }
 
       return `<Callout title="${escapeAttribute(block.title.trim())}">

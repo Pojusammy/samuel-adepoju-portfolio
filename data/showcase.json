@@ -1,55 +1,67 @@
 [
   {
-    "slug": "convo-hub-onboarding-flow",
-    "title": "Convo Hub Onboarding Flow",
-    "description": "A first-look flow built for Convo Hub, carefully designed to welcome users into a community product with clarity and warmth from the very beginning.",
-    "panelLabel": "CONVO HUB ONBOARDING FLOW",
+    "slug": "wearwise",
+    "title": "Wearwise",
+    "description": "A digital weather wardrobe assistant where the mood of the day adapts to the background. Suggest outfit based on weather prediction",
+    "panelLabel": "A digital weather wardrobe assistant",
     "panelColor": "#1A0A2E",
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-4-hd-staycheck.png",
-      "alt": "Convo Hub Onboarding Flow"
+      "src": "/images/showcase/day-3-hd-wearwise.png",
+      "alt": "Wearwise - A digital weather wardrobe assistant"
     }
   },
   {
-    "slug": "font-check-interface",
-    "title": "Font Check Interface",
-    "description": "UI explorations for the Font Check tool, a clean, minimal layout that puts clarity at the center of every interaction.",
-    "panelLabel": "FONT CHECK INTERFACE",
+    "slug": "staywise",
+    "title": "Staywise",
+    "description": "A short-stay damage reporting flow.",
+    "panelLabel": "A short-stay damage reporting flow.",
     "panelColor": "#171412",
-    "panelTone": "dark"
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-4-hd-staycheck.png",
+      "alt": "A short-stay damage reporting flow."
+    }
   },
   {
-    "slug": "meridian-grooming-quiz",
-    "title": "Meridian Grooming Quiz",
-    "description": "The product recommendation quiz UI, step-by-step, calm, focused on giving users a confident answer without overwhelming them.",
-    "panelLabel": "MERIDIAN GROOMING QUIZ",
+    "slug": "silentwatch-noisemeter",
+    "title": "Silentwatch - Noisemeter",
+    "description": "A noise meter that helps people understand the sound levels around them in real time and breaks it down in a simple, visual way.",
+    "panelLabel": "Noisemeter",
     "panelColor": "#1A1008",
-    "panelTone": "dark"
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-2-hd-noise-meter.png",
+      "alt": "a noise meter that helps people understand the sound levels around them in real time and breaks it down in a simple, visual way."
+    }
   },
   {
-    "slug": "pangaea-data-entry-redesign",
-    "title": "Pangaea Data Entry Redesign",
-    "description": "Revised data entry screens for the Pangaea supply chain platform, designed to reduce error rates and improve task completion.",
-    "panelLabel": "PANGAEA DATA ENTRY REDESIGN",
+    "slug": "ai-plant-doctor",
+    "title": "AI plant doctor",
+    "description": "A calm and intuitive flow that helps users identify plant diseases in seconds.",
+    "panelLabel": "AI plant doctor",
     "panelColor": "#081A10",
-    "panelTone": "dark"
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-1-hd-ai-plant-doctor.png",
+      "alt": "AI plant doctor"
+    }
   },
   {
-    "slug": "lumin-skin-rebrand-assets",
-    "title": "Lumin Skin Rebrand Assets",
-    "description": "Digital design assets created for the Lumin Skin website rebrand, focused on elevated visual quality and brand coherence.",
-    "panelLabel": "LUMIN SKIN REBRAND ASSETS",
+    "slug": "chargeloop",
+    "title": "Chargeloop",
+    "description": "An electric vehicle charging finder. A tool designed to reduce range anxiety by showing real-time availability, charging speed, pricing, and progress in a clear, calm way.",
+    "panelLabel": "Chargeloop",
     "panelColor": "#080E1A",
-    "panelTone": "dark"
-  },
-  {
-    "slug": "",
-    "title": "",
-    "description": "",
-    "panelLabel": "",
-    "panelColor": "#111111",
-    "panelTone": "dark"
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-5-hd-chargeloop.png",
+      "alt": "Chargeloop"
+    }
   }
 ]

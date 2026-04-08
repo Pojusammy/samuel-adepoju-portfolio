@@ -69,6 +69,14 @@ export type ProjectContentBlock =
     }
   | {
       id: string;
+      type: "video";
+      src: string;
+      alt: string;
+      caption?: string;
+      poster?: string;
+    }
+  | {
+      id: string;
       type: "callout";
       title: string;
       body: string;

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Callout } from "@/components/callout";
 import { ContentImage } from "@/components/content-image";
+import { ContentVideo } from "@/components/content-video";
 
 export const mdxComponents = {
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
@@ -19,5 +20,6 @@ export const mdxComponents = {
     );
   },
   ContentImage,
+  ContentVideo,
   Callout,
 };

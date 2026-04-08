@@ -13,6 +13,22 @@ type AdminData = {
 
 type SectionKey = "homepage" | "showcase" | "projects" | "uploads";
 
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function shouldAutoUpdateSlug(currentSlug: string, previousTitle: string) {
+  if (!currentSlug.trim()) return true;
+
+  const previousAutoSlug = slugify(previousTitle);
+  return currentSlug === previousAutoSlug;
+}
+
 const sectionLabels: Record<SectionKey, string> = {
   homepage: "Homepage",
   showcase: "Showcase",
@@ -25,17 +41,16 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
   const [site, setSite] = useState(initialData.site);
   const [showcase, setShowcase] = useState(initialData.showcase);
   const [projects, setProjects] = useState(initialData.projects);
-  const [activeProjectSlug, setActiveProjectSlug] = useState(initialData.projects[0]?.slug ?? "");
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   const [status, setStatus] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadFolder, setUploadFolder] = useState("uploads");
   const [uploadedPath, setUploadedPath] = useState("");
+  const [inlineUploadingKey, setInlineUploadingKey] = useState<string | null>(null);
 
-  const activeProject = useMemo(
-    () => projects.find((project) => project.slug === activeProjectSlug) ?? projects[0],
-    [activeProjectSlug, projects],
-  );
+  const safeActiveProjectIndex = Math.min(activeProjectIndex, Math.max(projects.length - 1, 0));
+  const activeProject = useMemo(() => projects[safeActiveProjectIndex], [projects, safeActiveProjectIndex]);
 
   async function save(kind: "site" | "showcase" | "project", payload: unknown) {
     setSaving(true);
@@ -68,6 +83,27 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
     if (data.path) setUploadedPath(data.path);
   }
 
+  async function uploadInlineMedia(file: File, folder: string) {
+    const formData = new FormData();
+    formData.set("file", file);
+    formData.set("folder", folder);
+
+    const response = await fetch("/api/admin/upload-image", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = (await response.json()) as { path?: string; error?: string; message?: string };
+
+    if (!response.ok || !data.path) {
+      throw new Error(data.error ?? "Upload failed.");
+    }
+
+    setStatus(data.message ?? "Media uploaded. Save your edits to publish it.");
+    setUploadedPath(data.path);
+    return data.path;
+  }
+
   function updateLinkList(
     key: "socialLinks" | "topBarLinks" | "accentLinks",
     index: number,
@@ -89,9 +125,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
   function updateActiveProject(mutator: (project: EditableProject) => EditableProject) {
     if (!activeProject) return;
     setProjects((current) =>
-      current.map((project) =>
-        project.slug === activeProject.slug ? mutator(project) : project,
-      ),
+      current.map((project, index) => (index === safeActiveProjectIndex ? mutator(project) : project)),
     );
   }
 
@@ -104,6 +138,8 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
     const nextBlock: ProjectContentBlock =
       type === "image"
         ? { id: crypto.randomUUID(), type: "image", src: "", alt: "", caption: "" }
+        : type === "video"
+          ? { id: crypto.randomUUID(), type: "video", src: "", alt: "", caption: "", poster: "" }
         : type === "callout"
           ? { id: crypto.randomUUID(), type: "callout", title: "Callout", body: "" }
           : { id: crypto.randomUUID(), type: "section", title: "New section", body: "" };
@@ -227,7 +263,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
             >
               <div className="space-y-4">
                 {showcase.map((item, index) => (
-                  <div key={item.slug || index} className="rounded-[22px] border border-line bg-background p-4">
+                  <div key={`showcase-item-${index}`} className="rounded-[22px] border border-line bg-background p-4">
                     <div className="mb-4 flex items-center justify-between">
                       <p className="text-sm font-medium text-foreground">{item.title || "Untitled showcase item"}</p>
                       <button
@@ -240,7 +276,22 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
                       <Field compact label="Slug" value={item.slug} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, slug: value } : entry))} />
-                      <Field compact label="Title" value={item.title} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, title: value } : entry))} />
+                      <Field
+                        compact
+                        label="Title"
+                        value={item.title}
+                        onChange={(value) =>
+                          setShowcase((current) =>
+                            current.map((entry, itemIndex) => {
+                              if (itemIndex !== index) return entry;
+                              const nextSlug = shouldAutoUpdateSlug(entry.slug, entry.title)
+                                ? slugify(value)
+                                : entry.slug;
+                              return { ...entry, title: value, slug: nextSlug };
+                            }),
+                          )
+                        }
+                      />
                       <Field compact label="Panel label" value={item.panelLabel} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, panelLabel: value } : entry))} />
                       <ColorField label="Panel color" value={item.panelColor} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, panelColor: value } : entry))} />
                       <Field compact label="Optional link" value={item.href ?? ""} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, href: value || undefined } : entry))} />
@@ -290,6 +341,30 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                           )
                         }
                       />
+                      <MediaUploadField
+                        label={(getShowcaseMedia(item)?.type ?? "image") === "video" ? "Upload video" : "Upload image / gif"}
+                        buttonLabel="Choose file"
+                        accept={(getShowcaseMedia(item)?.type ?? "image") === "video" ? "video/*" : "image/*"}
+                        uploading={inlineUploadingKey === `showcase-${index}-media`}
+                        onUploadStart={() => setInlineUploadingKey(`showcase-${index}-media`)}
+                        onUploadEnd={() => setInlineUploadingKey(null)}
+                        onUpload={async (file) => {
+                          const path = await uploadInlineMedia(file, "showcase");
+                          setShowcase((current) =>
+                            current.map((entry, itemIndex) =>
+                              itemIndex === index
+                                ? {
+                                    ...entry,
+                                    image: undefined,
+                                    media: getShowcaseMedia(entry)
+                                      ? { ...getShowcaseMedia(entry)!, src: path }
+                                      : { type: "image", src: path, alt: entry.title },
+                                  }
+                                : entry,
+                            ),
+                          );
+                        }}
+                      />
                       <Field
                         compact
                         label="Media alt"
@@ -311,26 +386,52 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                         }
                       />
                       {(getShowcaseMedia(item)?.type ?? "image") === "video" ? (
-                        <Field
-                          compact
-                          label="Poster image"
-                          value={getShowcaseMedia(item)?.poster ?? ""}
-                          onChange={(value) =>
-                            setShowcase((current) =>
-                              current.map((entry, itemIndex) =>
-                                itemIndex === index
-                                  ? {
-                                      ...entry,
-                                      image: undefined,
-                                      media: getShowcaseMedia(entry)
-                                        ? { ...getShowcaseMedia(entry)!, poster: value || undefined }
-                                        : { type: "video", src: "", alt: entry.title, poster: value || undefined },
-                                    }
-                                  : entry,
-                              ),
-                            )
-                          }
-                        />
+                        <>
+                          <Field
+                            compact
+                            label="Poster image"
+                            value={getShowcaseMedia(item)?.poster ?? ""}
+                            onChange={(value) =>
+                              setShowcase((current) =>
+                                current.map((entry, itemIndex) =>
+                                  itemIndex === index
+                                    ? {
+                                        ...entry,
+                                        image: undefined,
+                                        media: getShowcaseMedia(entry)
+                                          ? { ...getShowcaseMedia(entry)!, poster: value || undefined }
+                                          : { type: "video", src: "", alt: entry.title, poster: value || undefined },
+                                      }
+                                    : entry,
+                                ),
+                              )
+                            }
+                          />
+                          <MediaUploadField
+                            label="Upload poster"
+                            buttonLabel="Choose poster"
+                            accept="image/*"
+                            uploading={inlineUploadingKey === `showcase-${index}-poster`}
+                            onUploadStart={() => setInlineUploadingKey(`showcase-${index}-poster`)}
+                            onUploadEnd={() => setInlineUploadingKey(null)}
+                            onUpload={async (file) => {
+                              const path = await uploadInlineMedia(file, "showcase");
+                              setShowcase((current) =>
+                                current.map((entry, itemIndex) =>
+                                  itemIndex === index
+                                    ? {
+                                        ...entry,
+                                        image: undefined,
+                                        media: getShowcaseMedia(entry)
+                                          ? { ...getShowcaseMedia(entry)!, poster: path }
+                                          : { type: "video", src: "", alt: entry.title, poster: path },
+                                      }
+                                    : entry,
+                                ),
+                              );
+                            }}
+                          />
+                        </>
                       ) : null}
                     </div>
                     <div className="mt-3">
@@ -344,6 +445,16 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                         className="w-full rounded-2xl border border-line bg-background px-4 py-3 text-[14px] leading-7 text-foreground outline-none"
                       />
                     </div>
+                    {getShowcaseMedia(item)?.src ? (
+                      <div className="mt-4">
+                        <MediaPreview
+                          type={getShowcaseMedia(item)?.type ?? "image"}
+                          src={getShowcaseMedia(item)!.src}
+                          alt={getShowcaseMedia(item)!.alt}
+                          poster={getShowcaseMedia(item)?.poster}
+                        />
+                      </div>
+                    ) : null}
                   </div>
                 ))}
                 <button
@@ -362,13 +473,13 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
           <section className="grid gap-6 xl:grid-cols-[260px_minmax(0,1fr)]">
             <Card title="Project list">
               <div className="space-y-2">
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <button
-                    key={project.slug}
+                    key={`project-item-${index}`}
                     type="button"
-                    onClick={() => setActiveProjectSlug(project.slug)}
+                    onClick={() => setActiveProjectIndex(index)}
                     className={`block w-full rounded-2xl px-4 py-3 text-left text-sm transition-colors ${
-                      activeProject?.slug === project.slug
+                      safeActiveProjectIndex === index
                         ? "bg-foreground text-background"
                         : "bg-background text-foreground-muted hover:text-foreground"
                     }`}
@@ -381,7 +492,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   type="button"
                   onClick={() => {
                     const newProject: EditableProject = {
-                      slug: `new-project-${Date.now()}`,
+                      slug: slugify("New Project"),
                       title: "New Project",
                       date: new Date().toISOString().slice(0, 10),
                       excerpt: "",
@@ -398,7 +509,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                       ],
                     };
                     setProjects((current) => [newProject, ...current]);
-                    setActiveProjectSlug(newProject.slug);
+                    setActiveProjectIndex(0);
                   }}
                   className="rounded-full border border-line px-4 py-2 text-sm text-foreground-muted hover:border-line-strong hover:text-foreground"
                 >
@@ -423,24 +534,68 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                     compact
                     label="Slug"
                     value={activeProject.slug}
-                    onChange={(value) => {
-                      setProjects((current) =>
-                        current.map((project) =>
-                          project.slug === activeProject.slug ? { ...project, slug: value } : project,
-                        ),
-                      );
-                      setActiveProjectSlug(value);
+                    onChange={(value) => updateActiveProject((project) => ({ ...project, slug: value }))}
+                  />
+                  <Field compact label="Date" value={activeProject.date} onChange={(value) => updateActiveProject((project) => ({ ...project, date: value }))} />
+                  <Field
+                    compact
+                    label="Title"
+                    value={activeProject.title}
+                    onChange={(value) =>
+                      updateActiveProject((project) => ({
+                        ...project,
+                        title: value,
+                        slug: shouldAutoUpdateSlug(project.slug, project.title) ? slugify(value) : project.slug,
+                      }))
+                    }
+                  />
+                  <Field compact label="Live URL" value={activeProject.liveUrl ?? ""} onChange={(value) => updateActiveProject((project) => ({ ...project, liveUrl: value || undefined }))} />
+                  <Field compact label="Thumbnail path" value={activeProject.thumbnail} onChange={(value) => updateActiveProject((project) => ({ ...project, thumbnail: value }))} />
+                  <Field compact label="Thumbnail alt" value={activeProject.thumbnailAlt} onChange={(value) => updateActiveProject((project) => ({ ...project, thumbnailAlt: value }))} />
+                  <Field compact label="Cover image path" value={activeProject.coverImage ?? ""} onChange={(value) => updateActiveProject((project) => ({ ...project, coverImage: value || undefined }))} />
+                  <Field compact label="Cover image alt" value={activeProject.coverAlt ?? ""} onChange={(value) => updateActiveProject((project) => ({ ...project, coverAlt: value || undefined }))} />
+                  <Field compact label="Role" value={activeProject.role ?? ""} onChange={(value) => updateActiveProject((project) => ({ ...project, role: value || undefined }))} />
+                  <MediaUploadField
+                    label="Upload thumbnail"
+                    buttonLabel="Choose thumbnail"
+                    accept="image/*"
+                    uploading={inlineUploadingKey === "project-thumbnail"}
+                    onUploadStart={() => setInlineUploadingKey("project-thumbnail")}
+                    onUploadEnd={() => setInlineUploadingKey(null)}
+                    onUpload={async (file) => {
+                      const path = await uploadInlineMedia(file, "projects");
+                      updateActiveProject((project) => ({ ...project, thumbnail: path }));
                     }}
                   />
-                  <Field compact label="Date" value={activeProject.date} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, date: value } : project))} />
-                  <Field compact label="Title" value={activeProject.title} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, title: value } : project))} />
-                  <Field compact label="Live URL" value={activeProject.liveUrl ?? ""} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, liveUrl: value || undefined } : project))} />
-                  <Field compact label="Thumbnail path" value={activeProject.thumbnail} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, thumbnail: value } : project))} />
-                  <Field compact label="Thumbnail alt" value={activeProject.thumbnailAlt} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, thumbnailAlt: value } : project))} />
-                  <Field compact label="Cover image path" value={activeProject.coverImage ?? ""} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, coverImage: value || undefined } : project))} />
-                  <Field compact label="Cover image alt" value={activeProject.coverAlt ?? ""} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, coverAlt: value || undefined } : project))} />
-                  <Field compact label="Role" value={activeProject.role ?? ""} onChange={(value) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, role: value || undefined } : project))} />
+                  <MediaUploadField
+                    label="Upload cover"
+                    buttonLabel="Choose cover"
+                    accept="image/*"
+                    uploading={inlineUploadingKey === "project-cover"}
+                    onUploadStart={() => setInlineUploadingKey("project-cover")}
+                    onUploadEnd={() => setInlineUploadingKey(null)}
+                    onUpload={async (file) => {
+                      const path = await uploadInlineMedia(file, "projects");
+                      updateActiveProject((project) => ({ ...project, coverImage: path }));
+                    }}
+                  />
                 </div>
+                {activeProject.thumbnail || activeProject.coverImage ? (
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    {activeProject.thumbnail ? (
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.18em] text-foreground-faint">Thumbnail preview</p>
+                        <MediaPreview type="image" src={activeProject.thumbnail} alt={activeProject.thumbnailAlt} />
+                      </div>
+                    ) : null}
+                    {activeProject.coverImage ? (
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.18em] text-foreground-faint">Cover preview</p>
+                        <MediaPreview type="image" src={activeProject.coverImage} alt={activeProject.coverAlt ?? activeProject.title} />
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
                 <div className="mt-4">
                   <label className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">
                     Excerpt
@@ -448,7 +603,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   <textarea
                     rows={4}
                     value={activeProject.excerpt}
-                    onChange={(event) => setProjects((current) => current.map((project) => project.slug === activeProject.slug ? { ...project, excerpt: event.target.value } : project))}
+                    onChange={(event) => updateActiveProject((project) => ({ ...project, excerpt: event.target.value }))}
                     className="w-full rounded-2xl border border-line bg-background px-4 py-3 text-[14px] leading-7 text-foreground outline-none"
                   />
                 </div>
@@ -460,6 +615,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                     <div className="flex flex-wrap gap-2">
                       <SmallButton onClick={() => addProjectBlock("section")}>Add section</SmallButton>
                       <SmallButton onClick={() => addProjectBlock("image")}>Add image</SmallButton>
+                      <SmallButton onClick={() => addProjectBlock("video")}>Add video</SmallButton>
                       <SmallButton onClick={() => addProjectBlock("callout")}>Add callout</SmallButton>
                     </div>
                   </div>
@@ -561,6 +717,22 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                                 )
                               }
                             />
+                            <MediaUploadField
+                              label="Upload image / gif"
+                              buttonLabel="Choose media"
+                              accept="image/*"
+                              uploading={inlineUploadingKey === block.id}
+                              onUploadStart={() => setInlineUploadingKey(block.id)}
+                              onUploadEnd={() => setInlineUploadingKey(null)}
+                              onUpload={async (file) => {
+                                const path = await uploadInlineMedia(file, "projects");
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, src: path } : item,
+                                  ),
+                                );
+                              }}
+                            />
                             <div className="md:col-span-2">
                               <TextAreaField
                                 label="Caption"
@@ -575,6 +747,108 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                                 }
                               />
                             </div>
+                            {block.src ? (
+                              <div className="md:col-span-2">
+                                <MediaPreview type="image" src={block.src} alt={block.alt} />
+                              </div>
+                            ) : null}
+                          </div>
+                        ) : null}
+
+                        {block.type === "video" ? (
+                          <div className="grid gap-3 md:grid-cols-2">
+                            <Field
+                              compact
+                              label="Video path"
+                              value={block.src}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, src: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <Field
+                              compact
+                              label="Video title"
+                              value={block.alt}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, alt: value } : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <MediaUploadField
+                              label="Upload video"
+                              buttonLabel="Choose video"
+                              accept="video/*"
+                              uploading={inlineUploadingKey === `${block.id}-video`}
+                              onUploadStart={() => setInlineUploadingKey(`${block.id}-video`)}
+                              onUploadEnd={() => setInlineUploadingKey(null)}
+                              onUpload={async (file) => {
+                                const path = await uploadInlineMedia(file, "projects");
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, src: path } : item,
+                                  ),
+                                );
+                              }}
+                            />
+                            <Field
+                              compact
+                              label="Poster image"
+                              value={block.poster ?? ""}
+                              onChange={(value) =>
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, poster: value || undefined } : item,
+                                  ),
+                                )
+                              }
+                            />
+                            <MediaUploadField
+                              label="Upload poster"
+                              buttonLabel="Choose poster"
+                              accept="image/*"
+                              uploading={inlineUploadingKey === `${block.id}-poster`}
+                              onUploadStart={() => setInlineUploadingKey(`${block.id}-poster`)}
+                              onUploadEnd={() => setInlineUploadingKey(null)}
+                              onUpload={async (file) => {
+                                const path = await uploadInlineMedia(file, "projects");
+                                updateProjectBlocks(
+                                  (activeProject.blocks ?? []).map((item) =>
+                                    item.id === block.id ? { ...item, poster: path } : item,
+                                  ),
+                                );
+                              }}
+                            />
+                            <div className="md:col-span-2">
+                              <TextAreaField
+                                label="Caption"
+                                value={block.caption ?? ""}
+                                rows={3}
+                                onChange={(value) =>
+                                  updateProjectBlocks(
+                                    (activeProject.blocks ?? []).map((item) =>
+                                      item.id === block.id ? { ...item, caption: value } : item,
+                                    ),
+                                  )
+                                }
+                              />
+                            </div>
+                            {block.src ? (
+                              <div className="md:col-span-2">
+                                <MediaPreview
+                                  type="video"
+                                  src={block.src}
+                                  alt={block.alt}
+                                  poster={block.poster}
+                                />
+                              </div>
+                            ) : null}
                           </div>
                         ) : null}
 
@@ -610,7 +884,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                     ))}
                   </div>
                   <div className="mt-5 rounded-2xl border border-dashed border-line bg-background px-4 py-3 text-sm leading-6 text-foreground-muted">
-                    Use the Uploads tab first, then paste the returned image path into any image block.
+                    Upload directly inside each media block. Save the project after uploading so the live site picks up the new asset on the next deploy.
                   </div>
                 </div>
               </Card>
@@ -620,7 +894,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
 
         {section === "uploads" ? (
           <section className="space-y-6">
-            <Card title="Image uploads">
+            <Card title="Media uploads">
               <form
                 className="space-y-4"
                 onSubmit={async (event) => {
@@ -649,12 +923,12 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
 
                   <label className="block">
                     <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">
-                      Image file
+                      Media file
                     </span>
                     <input
                       name="file"
                       type="file"
-                      accept="image/*"
+                      accept="image/*,video/*"
                       className="w-full rounded-2xl border border-line bg-background px-4 py-[11px] text-[14px] text-foreground outline-none"
                       required
                     />
@@ -666,13 +940,13 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   disabled={uploading}
                   className="rounded-full bg-foreground px-5 py-2.5 text-sm text-background transition-opacity hover:opacity-88 disabled:opacity-60"
                 >
-                  {uploading ? "Uploading..." : "Upload image"}
+                  {uploading ? "Uploading..." : "Upload media"}
                 </button>
               </form>
 
               {uploadedPath ? (
                 <div className="mt-5 rounded-2xl border border-line bg-background p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-foreground-faint">Use this image path</p>
+                  <p className="text-xs uppercase tracking-[0.18em] text-foreground-faint">Use this media path</p>
                   <p className="mt-2 text-sm text-foreground">{uploadedPath}</p>
                 </div>
               ) : null}
@@ -842,6 +1116,80 @@ function SmallButton({
     >
       {children}
     </button>
+  );
+}
+
+function MediaUploadField({
+  label,
+  buttonLabel,
+  accept,
+  uploading,
+  onUpload,
+  onUploadStart,
+  onUploadEnd,
+}: {
+  label: string;
+  buttonLabel: string;
+  accept: string;
+  uploading: boolean;
+  onUpload: (file: File) => Promise<void>;
+  onUploadStart: () => void;
+  onUploadEnd: () => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">{label}</span>
+      <input
+        type="file"
+        accept={accept}
+        className="hidden"
+        onChange={async (event) => {
+          const file = event.target.files?.[0];
+          if (!file) return;
+          onUploadStart();
+          try {
+            await onUpload(file);
+          } finally {
+            onUploadEnd();
+            event.currentTarget.value = "";
+          }
+        }}
+      />
+      <span className="inline-flex w-full cursor-pointer items-center justify-center rounded-2xl border border-line bg-background px-4 py-2.5 text-[14px] text-foreground-muted transition-colors hover:border-line-strong hover:text-foreground">
+        {uploading ? "Uploading..." : buttonLabel}
+      </span>
+    </label>
+  );
+}
+
+function MediaPreview({
+  type,
+  src,
+  alt,
+  poster,
+}: {
+  type: "image" | "video";
+  src: string;
+  alt: string;
+  poster?: string;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-line bg-background-soft">
+      {type === "video" ? (
+        <video
+          src={src}
+          poster={poster}
+          title={alt}
+          className="block aspect-[16/10] w-full object-cover"
+          controls
+          playsInline
+          preload="metadata"
+        />
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt={alt} className="block aspect-[16/10] w-full object-cover" />
+      )}
+    </div>
   );
 }
 
