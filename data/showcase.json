@@ -106,7 +106,7 @@
   {
     "slug": "event-booking-app",
     "title": "Event booking App",
-    "description": "",
+    "description": "An intuitive interface that works for both first-time users looking to buy tickets and event planners searching for reliable vendors.",
     "panelLabel": "Event booking App",
     "panelColor": "#111111",
     "panelTone": "dark",
