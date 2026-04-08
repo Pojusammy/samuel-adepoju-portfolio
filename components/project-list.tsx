@@ -32,7 +32,25 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
   }, [projects]);
 
   return (
-    <div ref={containerRef} className="relative">
+    <motion.div
+      ref={containerRef}
+      className="relative"
+      initial={reduceMotion ? false : "hidden"}
+      whileInView={reduceMotion ? undefined : "visible"}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      variants={
+        reduceMotion
+          ? undefined
+          : {
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.055,
+                },
+              },
+            }
+      }
+    >
       <div className="pointer-events-none absolute inset-x-0 top-0 hidden xl:block">
         <AnimatePresence mode="wait">
           {hoveredProject ? (
@@ -60,15 +78,29 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
       </div>
 
       <div className="border-t border-line">
-        {rows.map(({ project, year, showYear }) => (
-          <div
+        {rows.map(({ project, year, showYear }, index) => (
+          <motion.div
             key={project.slug}
             className="grid grid-cols-[44px_minmax(0,1fr)] gap-4 py-0 sm:grid-cols-[56px_1fr] sm:gap-8"
+            variants={
+              reduceMotion
+                ? undefined
+                : {
+                    hidden: { opacity: 0, y: 16 },
+                    visible: { opacity: 1, y: 0 },
+                  }
+            }
+            transition={
+              reduceMotion
+                ? undefined
+                : { duration: 0.72, delay: index * 0.005, ease: [0.22, 1, 0.36, 1] }
+            }
           >
             <div className="pt-3 text-[13px] leading-5 text-foreground-faint">
               {showYear ? year : ""}
             </div>
             <div>
+              <motion.div whileHover={reduceMotion ? undefined : { x: 2 }} transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}>
               <Link
                 href={`/projects/${project.slug}`}
                 className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-line py-[14px] sm:gap-4"
@@ -102,17 +134,18 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
                   )
                 }
               >
-                <div className="truncate pr-2 text-[13.5px] leading-[22px] text-foreground/80 transition-opacity duration-200 group-hover:opacity-75 sm:text-[15px]">
+                <div className="truncate pr-2 text-[13.5px] leading-[22px] text-foreground/80 transition-[opacity,transform] duration-300 group-hover:translate-x-[1px] group-hover:opacity-75 sm:text-[15px]">
                   {project.title}
                 </div>
-                <div className="text-[13px] leading-5 text-foreground-faint">
+                <div className="text-[13px] leading-5 text-foreground-faint transition-transform duration-300 group-hover:-translate-x-[1px]">
                   {formatListDate(project.date)}
                 </div>
               </Link>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
