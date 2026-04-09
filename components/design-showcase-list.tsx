@@ -17,6 +17,7 @@ type ShowcaseTabKey = (typeof showcaseTabs)[number]["key"];
 export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
   const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<ShowcaseTabKey>("mobile-apps");
+  const hasMounted = useRef(false);
   const tabRefs = useRef<Record<ShowcaseTabKey, HTMLButtonElement | null>>({
     "mobile-apps": null,
     websites: null,
@@ -33,6 +34,11 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
   );
 
   useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+
     tabRefs.current[activeTab]?.scrollIntoView({
       behavior: reduceMotion ? "auto" : "smooth",
       block: "nearest",
