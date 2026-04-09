@@ -154,5 +154,18 @@
       "src": "/images/showcase/day-28.png",
       "alt": "Leaderboard Screen"
     }
+  },
+  {
+    "slug": "quick-polls-feedback-screen",
+    "title": "Quick polls & feedback screen",
+    "description": "Quick Polls & Feedback screen where users can vote on trending topics",
+    "panelLabel": "Quick polls & feedback screen",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-24l.png",
+      "alt": "Quick polls & feedback screen"
+    }
   }
 ]
