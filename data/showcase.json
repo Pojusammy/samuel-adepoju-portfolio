@@ -143,11 +143,16 @@
     }
   },
   {
-    "slug": "",
-    "title": "",
-    "description": "",
+    "slug": "leaderboard-screen",
+    "title": "Leaderboard Screen",
+    "description": "Community Leaderboard to track top performers and give users a little nudge of inspiration.",
     "panelLabel": "",
     "panelColor": "#111111",
-    "panelTone": "dark"
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-28.png",
+      "alt": "Leaderboard Screen"
+    }
   }
 ]
