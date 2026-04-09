@@ -256,5 +256,47 @@
       "alt": "Mortgage"
     },
     "category": "dashboards"
+  },
+  {
+    "slug": "marketing-campaign-dashboard",
+    "title": "Marketing campaign dashboard",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "category": "dashboards",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/marketlytics.png",
+      "alt": ""
+    }
+  },
+  {
+    "slug": "pictory-landing-page-redesign",
+    "title": "Pictory Landing page redesign",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "category": "websites",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/pictory-lp.png",
+      "alt": ""
+    }
+  },
+  {
+    "slug": "pricing-section",
+    "title": "Pricing section",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/pricing-hd-colored.png",
+      "alt": "Pricing section"
+    },
+    "category": "websites"
   }
 ]
