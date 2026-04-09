@@ -228,5 +228,19 @@
       "src": "/images/showcase/day-13l.png",
       "alt": "Milestone screen"
     }
+  },
+  {
+    "slug": "mortgage-document-upload",
+    "title": "Mortgage document upload",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/mortage-document.png",
+      "alt": ""
+    },
+    "category": "dashboards"
   }
 ]
