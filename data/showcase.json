@@ -115,5 +115,18 @@
       "src": "/images/showcase/day-13-event-booking.png",
       "alt": "Event booking App"
     }
+  },
+  {
+    "slug": "settings-screen",
+    "title": "Settings Screen",
+    "description": "Settings screen with a focus on appearance preferences.",
+    "panelLabel": "Settings screen with a focus on appearance preferences.",
+    "panelColor": "#47e175",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-26l.png",
+      "alt": "Settings Screen"
+    }
   }
 ]
