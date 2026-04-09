@@ -180,5 +180,18 @@
       "src": "/images/showcase/day-20l.png",
       "alt": "Focus Dashboard"
     }
+  },
+  {
+    "slug": "productivity-calendar-ui",
+    "title": "Productivity Calendar UI",
+    "description": "Productivity Calendar UI that helps users track their streaks, XP, mood, and time spent daily.",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-18l.png",
+      "alt": "Productivity Calendar UI that helps users track their streaks, XP, mood, and time spent daily."
+    }
   }
 ]
