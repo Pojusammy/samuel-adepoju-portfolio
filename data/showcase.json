@@ -128,5 +128,26 @@
       "src": "/images/showcase/day-26l.png",
       "alt": "Settings Screen"
     }
+  },
+  {
+    "slug": "paywall-screen",
+    "title": "Paywall screen",
+    "description": "Paywall screen for the focus/productivity app.",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-29.png",
+      "alt": "Paywall screen"
+    }
+  },
+  {
+    "slug": "",
+    "title": "",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark"
   }
 ]
