@@ -230,8 +230,8 @@
     }
   },
   {
-    "slug": "mortgage-document-upload",
-    "title": "Mortgage document upload",
+    "slug": "mortgage-document",
+    "title": "Mortgage document",
     "description": "",
     "panelLabel": "",
     "panelColor": "#111111",
@@ -242,5 +242,18 @@
       "alt": ""
     },
     "category": "dashboards"
+  },
+  {
+    "slug": "mortgage-document-upload-modal",
+    "title": "Mortgage document upload modal",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/mortage-document-modal.png",
+      "alt": "Mortgage"
+    }
   }
 ]
