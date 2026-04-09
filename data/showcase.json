@@ -314,11 +314,16 @@
     "category": "websites"
   },
   {
-    "slug": "",
-    "title": "",
+    "slug": "fintech-app-light",
+    "title": "Fintech App (Light)",
     "description": "",
     "panelLabel": "",
     "panelColor": "#111111",
-    "panelTone": "dark"
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/send-money-2.png",
+      "alt": "F"
+    }
   }
 ]
