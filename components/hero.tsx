@@ -132,9 +132,14 @@ export function Hero() {
                     <button
                       type="button"
                       onClick={() => setIsSecondParagraphExpanded(true)}
-                      className="mt-2 inline-flex text-[13px] font-medium tracking-[-0.01em] text-foreground underline decoration-white/20 underline-offset-4 transition-colors hover:text-foreground-soft"
+                      className="mt-2 inline-flex text-[13px] font-medium tracking-[-0.01em] text-foreground transition-colors hover:text-foreground-soft"
                     >
-                      Read more
+                      <span
+                        className="inline-block pb-px"
+                        style={{ borderBottom: "1px solid var(--read-more-underline)" }}
+                      >
+                        Read more
+                      </span>
                     </button>
                   ) : null}
                 </span>

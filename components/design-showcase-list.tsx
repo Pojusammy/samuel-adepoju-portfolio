@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import type { ShowcaseItem } from "@/lib/types";
 
@@ -18,6 +19,9 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
   const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<ShowcaseTabKey>("mobile-apps");
   const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ShowcaseItem | null>(null);
+  const [selectedImageSize, setSelectedImageSize] = useState<{ width: number; height: number } | null>(null);
   const hasMounted = useRef(false);
   const tabRefs = useRef<Record<ShowcaseTabKey, HTMLButtonElement | null>>({
     "mobile-apps": null,
@@ -48,6 +52,10 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
   }, [activeTab, reduceMotion]);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
     const root = document.documentElement;
     const updateTheme = () => setIsDarkTheme(root.dataset.theme === "dark");
 
@@ -61,6 +69,57 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!selectedItem) {
+      document.body.style.removeProperty("overflow");
+      setSelectedImageSize(null);
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedItem(null);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.removeProperty("overflow");
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [selectedItem]);
+
+  useEffect(() => {
+    if (!selectedItem) {
+      return;
+    }
+
+    const media =
+      selectedItem.media ?? (selectedItem.image ? { type: "image" as const, ...selectedItem.image } : undefined);
+
+    if (!media || media.type !== "image") {
+      setSelectedImageSize(null);
+      return;
+    }
+
+    const preloadImage = new window.Image();
+    preloadImage.onload = () => {
+      if (preloadImage.naturalWidth && preloadImage.naturalHeight) {
+        setSelectedImageSize({
+          width: preloadImage.naturalWidth,
+          height: preloadImage.naturalHeight,
+        });
+      }
+    };
+    preloadImage.src = media.src;
+
+    return () => {
+      preloadImage.onload = null;
+    };
+  }, [selectedItem]);
 
   return (
     <div className="space-y-8">
@@ -150,11 +209,14 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                 const media = item.media ?? (item.image ? { type: "image" as const, ...item.image } : undefined);
 
                 return (
-                  <motion.div
-                    className="group relative aspect-[1.58] w-full overflow-hidden rounded-[14px] sm:h-[425px] sm:aspect-auto"
+                  <motion.button
+                    type="button"
+                    aria-label={`Open ${item.title} in full view`}
+                    className="group relative block aspect-[1.58] w-full overflow-hidden rounded-[14px] sm:h-[425px] sm:aspect-auto"
                     style={{ backgroundColor: item.panelColor }}
                     whileHover={reduceMotion ? undefined : { y: -2 }}
                     transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    onClick={() => setSelectedItem(item)}
                   >
                     <motion.div
                       className="absolute inset-0"
@@ -204,7 +266,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                       )}
                     </motion.div>
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/18 via-transparent to-white/[0.03] opacity-70 transition-opacity duration-500 group-hover:opacity-100" />
-                  </motion.div>
+                  </motion.button>
                 );
               })()}
               <motion.div
@@ -231,6 +293,80 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
           </motion.div>
         )}
       </motion.div>
+
+      {isMounted
+        ? createPortal(
+            <AnimatePresence>
+              {selectedItem ? (
+                <motion.div
+                  className="fixed inset-0 z-[100] flex items-center justify-center bg-black/78 p-5 backdrop-blur-sm sm:p-8"
+                  initial={reduceMotion ? false : { opacity: 0 }}
+                  animate={reduceMotion ? undefined : { opacity: 1 }}
+                  exit={reduceMotion ? undefined : { opacity: 0 }}
+                  transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  onClick={() => setSelectedItem(null)}
+                >
+                  <motion.div
+                    className="relative flex w-full max-w-[920px] items-center justify-center rounded-[22px] bg-background-soft p-0 shadow-soft"
+                    initial={reduceMotion ? false : { opacity: 0, y: 16, scale: 0.985 }}
+                    animate={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: 10, scale: 0.99 }}
+                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    {(() => {
+                      const media =
+                        selectedItem.media ??
+                        (selectedItem.image ? { type: "image" as const, ...selectedItem.image } : undefined);
+
+                      if (!media) {
+                        return null;
+                      }
+
+                      if (media.type === "video") {
+                        return (
+                          <video
+                            src={media.src}
+                            poster={media.poster}
+                            aria-label={media.alt}
+                            className="max-h-[80vh] w-full rounded-[16px] bg-black object-contain"
+                            controls
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                          />
+                        );
+                      }
+
+                      return (
+                        <div
+                          className="flex w-full items-center justify-center overflow-hidden rounded-[16px]"
+                          style={{ backgroundColor: selectedItem.panelColor || "#ffffff" }}
+                        >
+                          {selectedImageSize ? (
+                            <Image
+                              src={media.src}
+                              alt={media.alt}
+                              width={selectedImageSize.width}
+                              height={selectedImageSize.height}
+                              className="h-auto max-h-[80vh] w-full object-contain"
+                              sizes="(max-width: 960px) calc(100vw - 40px), 920px"
+                              priority
+                            />
+                          ) : (
+                            <div className="aspect-[1.58] w-full" />
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </motion.div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }
