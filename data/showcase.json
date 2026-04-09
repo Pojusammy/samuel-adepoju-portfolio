@@ -352,5 +352,19 @@
       "alt": "TruAno"
     },
     "category": "websites"
+  },
+  {
+    "slug": "healthcare-dashboard",
+    "title": "Healthcare Dashboard",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/week-1-concept-1li.png",
+      "alt": "Health"
+    },
+    "category": "dashboards"
   }
 ]
