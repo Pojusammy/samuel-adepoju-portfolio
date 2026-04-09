@@ -421,5 +421,19 @@
       "alt": ""
     },
     "category": "dashboards"
+  },
+  {
+    "slug": "university-lms-dashboard",
+    "title": "University LMS Dashboard",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/different-angles-7.png",
+      "alt": ""
+    },
+    "category": "dashboards"
   }
 ]
