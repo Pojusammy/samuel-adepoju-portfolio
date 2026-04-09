@@ -391,6 +391,21 @@
       "type": "image",
       "src": "/images/showcase/week-1-concept-6.png",
       "alt": "DE"
+    },
+    "category": "dashboards"
+  },
+  {
+    "slug": "saas-dashboard",
+    "title": "SaaS Dashboard",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "category": "dashboards",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/week-2-concept-1.png",
+      "alt": ""
     }
   }
 ]
