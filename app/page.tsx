@@ -22,32 +22,34 @@ export default async function HomePage() {
   const showcaseItems = await getShowcaseItems();
 
   return (
-    <main className="mx-auto w-full max-w-[680px] px-5 pb-24 pt-4 sm:px-0 sm:pt-8">
+    <>
       <PageHeader links={topBarLinks} />
 
-      <div>
-        <Hero />
-      </div>
+      <main className="mx-auto w-full max-w-[680px] px-5 pb-24 pt-4 sm:px-0 sm:pt-8">
+        <div>
+          <Hero />
+        </div>
 
-      <Reveal delay={0.04}>
-        <section id="live-projects" className="mt-14 pt-8">
-          <SectionLabel>Live Projects</SectionLabel>
-          <ProjectList projects={projects} />
-        </section>
-      </Reveal>
+        <Reveal delay={0.04}>
+          <section id="live-projects" className="mt-14 pt-8">
+            <SectionLabel>Live Projects</SectionLabel>
+            <ProjectList projects={projects} />
+          </section>
+        </Reveal>
 
-      <Reveal delay={0.08}>
-        <section id="design-showcase" className="mt-16 pt-8">
-          <SectionLabel>Design Showcase</SectionLabel>
-          <DesignShowcaseList items={showcaseItems} />
-        </section>
-      </Reveal>
+        <Reveal delay={0.08}>
+          <section id="design-showcase" className="mt-16 pt-8">
+            <SectionLabel>Design Showcase</SectionLabel>
+            <DesignShowcaseList items={showcaseItems} />
+          </section>
+        </Reveal>
 
-      <Reveal delay={0.12}>
-        <section className="mt-8 border-t border-line pt-20">
-          <ContactSection />
-        </section>
-      </Reveal>
-    </main>
+        <Reveal delay={0.12}>
+          <section className="mt-8 border-t border-line pt-20">
+            <ContactSection />
+          </section>
+        </Reveal>
+      </main>
+    </>
   );
 }

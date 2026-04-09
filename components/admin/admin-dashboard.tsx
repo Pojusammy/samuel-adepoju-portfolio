@@ -294,6 +294,27 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                       />
                       <Field compact label="Panel label" value={item.panelLabel} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, panelLabel: value } : entry))} />
                       <ColorField label="Panel color" value={item.panelColor} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, panelColor: value } : entry))} />
+                      <SelectField
+                        label="Category"
+                        value={item.category ?? "mobile-apps"}
+                        options={[
+                          { label: "Mobile Apps", value: "mobile-apps" },
+                          { label: "Websites", value: "websites" },
+                          { label: "Dashboards", value: "dashboards" },
+                        ]}
+                        onChange={(value: string) =>
+                          setShowcase((current) =>
+                            current.map((entry, itemIndex) =>
+                              itemIndex === index
+                                ? {
+                                    ...entry,
+                                    category: value as "mobile-apps" | "websites" | "dashboards",
+                                  }
+                                : entry,
+                            ),
+                          )
+                        }
+                      />
                       <Field compact label="Optional link" value={item.href ?? ""} onChange={(value) => setShowcase((current) => current.map((entry, itemIndex) => itemIndex === index ? { ...entry, href: value || undefined } : entry))} />
                       <SelectField
                         label="Media type"
@@ -922,17 +943,30 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                     <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">
                       Target folder
                     </span>
-                    <select
-                      name="folder"
-                      value={uploadFolder}
-                      onChange={(event) => setUploadFolder(event.target.value)}
-                      className="w-full rounded-2xl border border-line bg-background px-4 py-3 text-[14px] text-foreground outline-none"
-                    >
-                      <option value="uploads">uploads</option>
-                      <option value="projects">projects</option>
-                      <option value="showcase">showcase</option>
-                      <option value="ambient">ambient</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        name="folder"
+                        value={uploadFolder}
+                        onChange={(event) => setUploadFolder(event.target.value)}
+                        className="w-full appearance-none rounded-2xl border border-line bg-background px-4 py-3 pr-10 text-[14px] text-foreground outline-none"
+                      >
+                        <option value="uploads">uploads</option>
+                        <option value="projects">projects</option>
+                        <option value="showcase">showcase</option>
+                        <option value="ambient">ambient</option>
+                      </select>
+                      <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-foreground-muted">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                          <path
+                            d="M4.5 6.75L9 11.25L13.5 6.75"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </div>
                   </label>
 
                   <label className="block">
@@ -1076,17 +1110,30 @@ function SelectField({
   return (
     <label className="block">
       <span className="mb-2 block text-xs uppercase tracking-[0.18em] text-foreground-faint">{label}</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-2xl border border-line bg-background px-4 py-2.5 text-[14px] text-foreground outline-none"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="w-full appearance-none rounded-2xl border border-line bg-background px-4 py-2.5 pr-10 text-[14px] text-foreground outline-none"
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-foreground-muted">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path
+              d="M4.5 6.75L9 11.25L13.5 6.75"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </div>
     </label>
   );
 }

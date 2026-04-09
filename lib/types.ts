@@ -37,6 +37,7 @@ export type ShowcaseItem = {
   slug: string;
   title: string;
   description: string;
+  category?: "mobile-apps" | "websites" | "dashboards";
   href?: string;
   panelLabel: string;
   panelColor: string;
