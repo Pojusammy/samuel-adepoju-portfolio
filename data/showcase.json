@@ -193,5 +193,18 @@
       "src": "/images/showcase/day-18l.png",
       "alt": "Productivity Calendar UI that helps users track their streaks, XP, mood, and time spent daily."
     }
+  },
+  {
+    "slug": "daily-journal",
+    "title": "Daily Journal",
+    "description": "A calm, reflective journaling experience.",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-16-updated-3.png",
+      "alt": "a calm, reflective journaling experience."
+    }
   }
 ]
