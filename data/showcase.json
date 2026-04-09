@@ -379,5 +379,18 @@
       "src": "/images/showcase/week-1-concept-5.png",
       "alt": "Dev"
     }
+  },
+  {
+    "slug": "devops-dashboard-l",
+    "title": "DevOps Dashboard (L)",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/week-1-concept-6.png",
+      "alt": "DE"
+    }
   }
 ]
