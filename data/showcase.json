@@ -298,5 +298,27 @@
       "alt": "Pricing section"
     },
     "category": "websites"
+  },
+  {
+    "slug": "qp-landing-page-redesign",
+    "title": "QP landing page redesign",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/redesignqp.png",
+      "alt": "QP landing oag"
+    },
+    "category": "websites"
+  },
+  {
+    "slug": "",
+    "title": "",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark"
   }
 ]
