@@ -167,5 +167,18 @@
       "src": "/images/showcase/day-24l.png",
       "alt": "Quick polls & feedback screen"
     }
+  },
+  {
+    "slug": "focus-dashboard",
+    "title": "Focus Dashboard",
+    "description": "Focus Dashboard that gives you a quick overview of how your day’s going.",
+    "panelLabel": "Focus Dashboard",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-20l.png",
+      "alt": "Focus Dashboard"
+    }
   }
 ]
