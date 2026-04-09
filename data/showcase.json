@@ -254,6 +254,7 @@
       "type": "image",
       "src": "/images/showcase/mortage-document-modal.png",
       "alt": "Mortgage"
-    }
+    },
+    "category": "dashboards"
   }
 ]
