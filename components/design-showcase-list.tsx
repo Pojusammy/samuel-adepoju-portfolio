@@ -17,6 +17,7 @@ type ShowcaseTabKey = (typeof showcaseTabs)[number]["key"];
 export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
   const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<ShowcaseTabKey>("mobile-apps");
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
   const hasMounted = useRef(false);
   const tabRefs = useRef<Record<ShowcaseTabKey, HTMLButtonElement | null>>({
     "mobile-apps": null,
@@ -46,10 +47,25 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
     });
   }, [activeTab, reduceMotion]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const updateTheme = () => setIsDarkTheme(root.dataset.theme === "dark");
+
+    updateTheme();
+
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="space-y-8">
       <div className="overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-max gap-2">
+        <div className="flex min-w-max items-center gap-3">
           {showcaseTabs.map((tab) => {
             const isActive = tab.key === activeTab;
 
@@ -60,25 +76,31 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                   tabRefs.current[tab.key] = element;
                 }}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => setActiveTab(tab.key)}
-                className={`relative rounded-full px-4 py-2.5 transition-colors sm:px-5 ${
-                  isActive ? "text-foreground" : "text-foreground-muted hover:text-foreground"
+                className={`rounded-full px-6 py-3 text-[14px] font-medium tracking-[-0.01em] transition-[color,border-color,background-color,box-shadow] duration-200 sm:px-8 sm:text-[15px] ${
+                  isActive
+                    ? "text-foreground"
+                    : "border border-transparent bg-transparent text-foreground-muted hover:text-foreground"
                 }`}
+                style={
+                  isActive
+                    ? isDarkTheme
+                      ? {
+                          lineHeight: "24px",
+                          backgroundColor: "#09090B",
+                          boxShadow: "0 6px 18px rgba(0, 0, 0, 0.08)",
+                        }
+                      : {
+                          lineHeight: "24px",
+                          backgroundColor: "#FFFFFF",
+                          boxShadow:
+                            "inset 0 0 0 1px #E5E5E5, 0 1px 2px rgba(17, 17, 17, 0.04), 0 12px 24px -12px rgba(17, 17, 17, 0.14)",
+                        }
+                    : { lineHeight: "24px" }
+                }
               >
-                {isActive ? (
-                  <motion.span
-                    layoutId="showcase-tab-pill"
-                    className="absolute inset-0 rounded-full bg-background"
-                    style={{ boxShadow: "0 6px 18px rgba(0, 0, 0, 0.08)" }}
-                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  />
-                ) : null}
-                <span
-                  className="relative z-10 block text-[14px] font-medium tracking-[-0.01em] sm:text-[15px]"
-                  style={{ lineHeight: "24px" }}
-                >
-                  {tab.label}
-                </span>
+                {tab.label}
               </button>
             );
           })}
