@@ -366,5 +366,18 @@
       "alt": "Health"
     },
     "category": "dashboards"
+  },
+  {
+    "slug": "devops-dashboard-dark",
+    "title": "DevOps Dashboard (Dark)",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/week-1-concept-5.png",
+      "alt": "Dev"
+    }
   }
 ]
