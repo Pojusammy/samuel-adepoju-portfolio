@@ -206,5 +206,18 @@
       "src": "/images/showcase/day-16-updated-3.png",
       "alt": "a calm, reflective journaling experience."
     }
+  },
+  {
+    "slug": "milestone-screen",
+    "title": "Milestone screen",
+    "description": "Milestone screens for a savings app that reward users for hitting major savings goals",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/day-13l.png",
+      "alt": "Milestone screen"
+    }
   }
 ]
