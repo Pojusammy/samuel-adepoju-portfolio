@@ -325,5 +325,32 @@
       "src": "/images/showcase/send-money-2.png",
       "alt": "F"
     }
+  },
+  {
+    "slug": "fintech-app-dark",
+    "title": "Fintech App (Dark)",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/send-money-3.png",
+      "alt": "Fin"
+    }
+  },
+  {
+    "slug": "truanon-lp-redesign",
+    "title": "TruAnon LP redesign",
+    "description": "",
+    "panelLabel": "",
+    "panelColor": "#111111",
+    "panelTone": "dark",
+    "media": {
+      "type": "image",
+      "src": "/images/showcase/truanon-lp-before.png",
+      "alt": "TruAno"
+    },
+    "category": "websites"
   }
 ]
