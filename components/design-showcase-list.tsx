@@ -65,7 +65,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
   return (
     <div className="space-y-8">
       <div className="overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-max items-center gap-3">
+        <div className="flex min-w-max items-center gap-2 sm:gap-2.5">
           {showcaseTabs.map((tab) => {
             const isActive = tab.key === activeTab;
 
@@ -78,7 +78,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setActiveTab(tab.key)}
-                className={`rounded-full px-6 py-3 text-[14px] font-medium tracking-[-0.01em] transition-[color,border-color,background-color,box-shadow] duration-200 sm:px-8 sm:text-[15px] ${
+                className={`rounded-full px-4 py-2.5 font-medium tracking-[-0.01em] transition-[color,border-color,background-color,box-shadow] duration-200 sm:px-5 ${
                   isActive
                     ? "text-foreground"
                     : "border border-transparent bg-transparent text-foreground-muted hover:text-foreground"
@@ -100,7 +100,9 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                     : { lineHeight: "24px" }
                 }
               >
-                {tab.label}
+                <span className="block text-[14px] sm:text-[15px]" style={{ lineHeight: "24px" }}>
+                  {tab.label}
+                </span>
               </button>
             );
           })}
