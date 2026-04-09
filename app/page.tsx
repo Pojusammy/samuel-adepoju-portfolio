@@ -1,6 +1,7 @@
 import { ContactSection } from "@/components/contact-section";
 import { DesignShowcaseList } from "@/components/design-showcase-list";
 import { Hero } from "@/components/hero";
+import { HomeScrollReset } from "@/components/home-scroll-reset";
 import { PageHeader } from "@/components/page-header";
 import { ProjectList } from "@/components/project-list";
 import { Reveal } from "@/components/reveal";
@@ -23,6 +24,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <HomeScrollReset />
       <PageHeader links={topBarLinks} />
 
       <main className="mx-auto w-full max-w-[680px] px-5 pb-24 pt-4 sm:px-0 sm:pt-8">
