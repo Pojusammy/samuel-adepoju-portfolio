@@ -15,6 +15,8 @@ Font Check is a web tool that helps designers and developers quickly understand 
 
 Users can search for a font or upload a font file and instantly see whether it is free for personal use, safe for commercial use, requires payment, or needs further verification. Instead of digging through legal text, they get a direct answer and a link to the official source when needed.
 
+<ContentImage src="/images/projects/screenshot-2026-04-10-at-16-46-03.webp" alt="" />
+
 ## Problem
 
 This started from a personal pain point. I often found fonts I wanted to use in projects but wasn’t sure about the licensing. Most resources online required going through long legal documents or jumping across multiple websites to confirm usage rights.
@@ -23,6 +25,52 @@ That process was slow and unclear. It created hesitation during design work and 
 
 <ContentImage src="/images/projects/screenshot-2026-04-10-at-16-46-03.webp" alt="" />
 
-## What I learned
+## Goal
 
-Clarity is not only about reducing text. Sometimes it means keeping the nuance, but changing the order in which people encounter it. By restructuring the experience around confidence first and detail second, the product felt much easier to trust.
+The goal was to design and build a simple interface that gives users a clear answer in seconds. It needed to translate licensing into plain language, support both search and upload workflows, and still remain trustworthy by pointing users back to official sources.
+
+Just as important, the product had to handle uncertainty properly. If the system could not verify a font, it needed to say that clearly instead of guessing.
+
+## My Role
+
+I worked on this as both a product designer and builder. I defined the problem, designed the experience, and built the product end to end.
+
+This included shaping the product direction, designing the flows and interface, structuring the data model, and integrating AI to support license summarization. I also handled the implementation using AI-assisted tools and deployed the product.
+
+## Solution
+
+The solution focuses on speed, clarity, and trust. The entire experience is built around a single input where users can either search for a font or upload one.
+
+When a font is found, the system presents a simple status such as free, commercial, paid, limited, or not allowed. This is supported by a short explanation and links to the official source.
+
+<ContentImage src="/images/projects/screenshot-2026-04-10-at-16-46-03.webp" alt="" />
+
+## Upload and detected font flow
+
+For users who already have a font file, the upload feature extracts the font metadata, identifies the name, and attempts to match it against known records.
+
+<ContentImage src="/images/projects/screenshot-2026-04-10-at-16-46-03.webp" alt="" />
+
+## Challenges
+
+One of the main challenges was dealing with the ambiguity of font licensing. Licenses vary across sources and use cases, making it difficult to standardize.
+
+To address this, I introduced a structured status system and focused on translating complexity into simple outputs.
+
+Another challenge was handling fonts that are not in the database. Instead of returning empty states, the system detects font metadata and provides a fallback experience.
+
+Avoiding misinformation was also critical. The product never forces an answer and instead clearly communicates when something is unknown.
+
+## Outcome
+
+Font Check is now live and solving a real problem. It provides a fast, clear way to check font usage without going through complex legal text.
+
+The product supports both search and upload workflows, handles edge cases, and is structured to scale as more fonts are added.
+
+<ContentImage src="/images/projects/screenshot-2026-04-10-at-16-46-03.webp" alt="" />
+
+## Next Steps
+
+The next phase focuses on improving coverage and accuracy. This includes expanding the database based on real user searches, improving font matching, and introducing a verification pipeline for unknown fonts.
+
+There is also room to explore deeper use cases such as web, app, and logo-specific licensing, as well as integrations into design workflows.
