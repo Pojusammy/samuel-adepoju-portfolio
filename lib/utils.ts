@@ -17,3 +17,10 @@ export function formatListDate(date: string) {
 
   return `${String(parsed.getDate()).padStart(2, "0")}/${String(parsed.getMonth() + 1).padStart(2, "0")}`;
 }
+
+export function getMediaTypeFromPath(path?: string) {
+  if (!path) return "image" as const;
+
+  const cleanPath = path.split("?")[0]?.split("#")[0] ?? path;
+  return /\.(mp4|webm|ogg|mov|m4v)$/i.test(cleanPath) ? ("video" as const) : ("image" as const);
+}

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 
 import type { EditableProject, ProjectContentBlock, ShowcaseItem, SiteContent } from "@/lib/types";
+import { getMediaTypeFromPath } from "@/lib/utils";
 
 type AdminData = {
   site: SiteContent;
@@ -145,6 +146,22 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
           : { id: crypto.randomUUID(), type: "section", title: "New section", body: "" };
 
     updateProjectBlocks([...currentBlocks, nextBlock]);
+  }
+
+  function renderProjectBlockToolbar(position: "top" | "bottom") {
+    return (
+      <div className={`flex items-center justify-between ${position === "bottom" ? "mb-4 mt-6" : "mb-3"}`}>
+        <label className="block text-xs uppercase tracking-[0.18em] text-foreground-faint">
+          Project content blocks
+        </label>
+        <div className="flex flex-wrap gap-2">
+          <SmallButton onClick={() => addProjectBlock("section")}>Add section</SmallButton>
+          <SmallButton onClick={() => addProjectBlock("image")}>Add image</SmallButton>
+          <SmallButton onClick={() => addProjectBlock("video")}>Add video</SmallButton>
+          <SmallButton onClick={() => addProjectBlock("callout")}>Add callout</SmallButton>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -586,7 +603,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   <MediaUploadField
                     label="Upload thumbnail"
                     buttonLabel="Choose thumbnail"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     uploading={inlineUploadingKey === "project-thumbnail"}
                     onUploadStart={() => setInlineUploadingKey("project-thumbnail")}
                     onUploadEnd={() => setInlineUploadingKey(null)}
@@ -598,7 +615,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   <MediaUploadField
                     label="Upload cover"
                     buttonLabel="Choose cover"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     uploading={inlineUploadingKey === "project-cover"}
                     onUploadStart={() => setInlineUploadingKey("project-cover")}
                     onUploadEnd={() => setInlineUploadingKey(null)}
@@ -613,13 +630,21 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                     {activeProject.thumbnail ? (
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.18em] text-foreground-faint">Thumbnail preview</p>
-                        <MediaPreview type="image" src={activeProject.thumbnail} alt={activeProject.thumbnailAlt} />
+                        <MediaPreview
+                          type={getMediaTypeFromPath(activeProject.thumbnail)}
+                          src={activeProject.thumbnail}
+                          alt={activeProject.thumbnailAlt}
+                        />
                       </div>
                     ) : null}
                     {activeProject.coverImage ? (
                       <div>
                         <p className="mb-2 text-xs uppercase tracking-[0.18em] text-foreground-faint">Cover preview</p>
-                        <MediaPreview type="image" src={activeProject.coverImage} alt={activeProject.coverAlt ?? activeProject.title} />
+                        <MediaPreview
+                          type={getMediaTypeFromPath(activeProject.coverImage)}
+                          src={activeProject.coverImage}
+                          alt={activeProject.coverAlt ?? activeProject.title}
+                        />
                       </div>
                     ) : null}
                   </div>
@@ -636,17 +661,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   />
                 </div>
                 <div className="mt-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <label className="block text-xs uppercase tracking-[0.18em] text-foreground-faint">
-                      Project content blocks
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      <SmallButton onClick={() => addProjectBlock("section")}>Add section</SmallButton>
-                      <SmallButton onClick={() => addProjectBlock("image")}>Add image</SmallButton>
-                      <SmallButton onClick={() => addProjectBlock("video")}>Add video</SmallButton>
-                      <SmallButton onClick={() => addProjectBlock("callout")}>Add callout</SmallButton>
-                    </div>
-                  </div>
+                  {renderProjectBlockToolbar("top")}
                   <div className="space-y-4">
                     {(activeProject.blocks ?? []).map((block, index) => (
                       <div key={block.id} className="rounded-[22px] border border-line bg-background p-4">
@@ -914,6 +929,7 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                   <div className="mt-5 rounded-2xl border border-dashed border-line bg-background px-4 py-3 text-sm leading-6 text-foreground-muted">
                     Upload directly inside each media block. Save the project after uploading so the live site picks up the new asset on the next deploy.
                   </div>
+                  {renderProjectBlockToolbar("bottom")}
                   <div className="mt-6 flex justify-end">
                     <SaveButton
                       disabled={saving}

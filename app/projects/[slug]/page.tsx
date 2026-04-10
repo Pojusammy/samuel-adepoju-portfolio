@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 import { siteMeta } from "@/data/site";
 import { getAllProjects, getProjectBySlug, getProjectSlugs } from "@/lib/projects";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getMediaTypeFromPath } from "@/lib/utils";
 
 export async function generateStaticParams() {
   const slugs = await getProjectSlugs();
@@ -24,6 +24,8 @@ export async function generateMetadata({
     return {};
   }
 
+  const coverMediaType = getMediaTypeFromPath(project.coverImage);
+
   return {
     title: project.title,
     description: project.excerpt,
@@ -31,7 +33,10 @@ export async function generateMetadata({
       title: project.title,
       description: project.excerpt,
       url: `${siteMeta.url}/projects/${project.slug}`,
-      images: project.coverImage ? [{ url: project.coverImage, alt: project.coverAlt ?? project.title }] : undefined,
+      images:
+        project.coverImage && coverMediaType === "image"
+          ? [{ url: project.coverImage, alt: project.coverAlt ?? project.title }]
+          : undefined,
     },
   };
 }
@@ -51,6 +56,7 @@ export default async function ProjectPage({
   const allProjects = await getAllProjects();
   const currentIndex = allProjects.findIndex((item) => item.slug === slug);
   const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
+  const coverMediaType = getMediaTypeFromPath(project.coverImage);
 
   return (
     <main className="mx-auto w-full max-w-[1180px] px-5 pb-24 pt-16 sm:px-7 lg:px-10 lg:pb-32">
@@ -81,14 +87,25 @@ export default async function ProjectPage({
         {project.coverImage ? (
           <div className="relative mt-10 overflow-hidden rounded-[1.9rem] border border-line bg-background-soft shadow-soft">
             <div className="relative aspect-[16/10]">
-              <Image
-                src={project.coverImage}
-                alt={project.coverAlt ?? project.title}
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 680px"
-              />
+              {coverMediaType === "video" ? (
+                <video
+                  src={project.coverImage}
+                  title={project.coverAlt ?? project.title}
+                  className="h-full w-full object-cover"
+                  controls
+                  playsInline
+                  preload="metadata"
+                />
+              ) : (
+                <Image
+                  src={project.coverImage}
+                  alt={project.coverAlt ?? project.title}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 680px"
+                />
+              )}
             </div>
           </div>
         ) : null}

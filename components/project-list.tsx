@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useMemo, useRef, useState } from "react";
 
 import type { ProjectFrontmatter } from "@/lib/types";
-import { formatListDate } from "@/lib/utils";
+import { formatListDate, getMediaTypeFromPath } from "@/lib/utils";
 
 export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
   const [hoveredProject, setHoveredProject] = useState<ProjectFrontmatter | null>(null);
@@ -63,14 +63,26 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
               className="absolute z-10 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border-[2px] border-background bg-black shadow-[0_10px_24px_rgba(0,0,0,0.14)]"
               style={{ top: hoverTop, left: hoverLeft }}
             >
-              <div className="relative size-[48px] overflow-hidden rounded-full">
-                <Image
-                  src={hoveredProject.thumbnail}
-                  alt={hoveredProject.thumbnailAlt}
-                  fill
-                  className="object-cover"
-                  sizes="48px"
-                />
+              <div className="relative size-[48px] overflow-hidden rounded-full bg-black">
+                {getMediaTypeFromPath(hoveredProject.thumbnail) === "video" ? (
+                  <video
+                    src={hoveredProject.thumbnail}
+                    title={hoveredProject.thumbnailAlt}
+                    className="size-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                ) : (
+                  <Image
+                    src={hoveredProject.thumbnail}
+                    alt={hoveredProject.thumbnailAlt}
+                    fill
+                    className="object-cover"
+                    sizes="48px"
+                  />
+                )}
               </div>
             </motion.div>
           ) : null}
