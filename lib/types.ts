@@ -31,6 +31,7 @@ export type SiteContent = {
   topBarLinks: SocialLink[];
   accentLinks: AccentLink[];
   heroSummary: string[];
+  heroSummaryMobile?: string[];
 };
 
 export type ShowcaseItem = {

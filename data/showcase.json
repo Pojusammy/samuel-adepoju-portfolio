@@ -9,7 +9,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-3-hd-wearwise.png",
+      "src": "/images/showcase/day-3-hd-wearwise.webp",
       "alt": "Wearwise - A digital weather wardrobe assistant"
     }
   },
@@ -23,7 +23,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-4-hd-staycheck.png",
+      "src": "/images/showcase/day-4-hd-staycheck.webp",
       "alt": "A short-stay damage reporting flow."
     }
   },
@@ -37,7 +37,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-2-hd-noise-meter.png",
+      "src": "/images/showcase/day-2-hd-noise-meter.webp",
       "alt": "a noise meter that helps people understand the sound levels around them in real time and breaks it down in a simple, visual way."
     }
   },
@@ -51,7 +51,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-1-hd-ai-plant-doctor.png",
+      "src": "/images/showcase/day-1-hd-ai-plant-doctor.webp",
       "alt": "AI plant doctor"
     }
   },
@@ -65,7 +65,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-5-hd-chargeloop.png",
+      "src": "/images/showcase/day-5-hd-chargeloop.webp",
       "alt": "Chargeloop"
     }
   },
@@ -79,7 +79,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/loan-check.png",
+      "src": "/images/showcase/loan-check.webp",
       "alt": "Loan eligibility check"
     }
   },
@@ -93,7 +93,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/loan-summary.png",
+      "src": "/images/showcase/loan-summary.webp",
       "alt": "Loan confirmation flow"
     }
   },
@@ -107,7 +107,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/g4f8v0wxiaauqc9.jpeg",
+      "src": "/images/showcase/g4f8v0wxiaauqc9.webp",
       "alt": "PlantPal"
     }
   },
@@ -121,7 +121,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-13-event-booking.png",
+      "src": "/images/showcase/day-13-event-booking.webp",
       "alt": "Event booking App"
     }
   },
@@ -134,7 +134,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-26l.png",
+      "src": "/images/showcase/day-26l.webp",
       "alt": "Settings Screen"
     }
   },
@@ -147,7 +147,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-29.png",
+      "src": "/images/showcase/day-29.webp",
       "alt": "Paywall screen"
     }
   },
@@ -160,7 +160,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-28.png",
+      "src": "/images/showcase/day-28.webp",
       "alt": "Leaderboard Screen"
     }
   },
@@ -173,7 +173,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-24l.png",
+      "src": "/images/showcase/day-24l.webp",
       "alt": "Quick polls & feedback screen"
     }
   },
@@ -186,7 +186,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-20l.png",
+      "src": "/images/showcase/day-20l.webp",
       "alt": "Focus Dashboard"
     }
   },
@@ -199,7 +199,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-18l.png",
+      "src": "/images/showcase/day-18l.webp",
       "alt": "Productivity Calendar UI that helps users track their streaks, XP, mood, and time spent daily."
     }
   },
@@ -212,7 +212,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-16-updated-3.png",
+      "src": "/images/showcase/day-16-updated-3.webp",
       "alt": "a calm, reflective journaling experience."
     }
   },
@@ -225,7 +225,7 @@
     "panelTone": "dark",
     "media": {
       "type": "image",
-      "src": "/images/showcase/day-13l.png",
+      "src": "/images/showcase/day-13l.webp",
       "alt": "Milestone screen"
     }
   },

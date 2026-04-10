@@ -87,5 +87,10 @@
     "I created [Font Check](https://fontchecker.vercel.app/), a tool that simplifies font licensing by translating complex legal terms into clear, actionable guidance, helping designers and developers quickly understand how fonts can be used.",
     "I also built [NoteKeys](https://frontend-nine-sigma-73.vercel.app/), a tool for musicians and creatives to capture and interpret musical ideas more intuitively, bridging raw input with structured output.",
     "I care about building products that are clear, useful, and built to last."
+  ],
+  "heroSummaryMobile": [
+    "I’m a product designer with 6+ years of experience building digital products across web and mobile. I focus on simplifying complexity, improving usability, and creating systems that scale.",
+    "I started as the founding UX designer at [Pangaea](https://www.pangaea.holdings/), working on the supply chain team, where I designed internal tools and built the company’s first design system.",
+    "I led design for [Convo Hub](https://www.theconvohub.com/), [Meridian Grooming](https://www.meridiangrooming.com/), and [Lumin Skin](https://www.luminskin.com/) and I build tools like [Font Check](https://fontchecker.vercel.app/) and [NoteKeys](https://frontend-nine-sigma-73.vercel.app/)."
   ]
 }

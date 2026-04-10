@@ -10,3 +10,4 @@ export const socialLinks: SocialLink[] = content.socialLinks;
 export const topBarLinks: SocialLink[] = content.topBarLinks;
 export const accentLinks: AccentLink[] = content.accentLinks;
 export const heroSummary = content.heroSummary;
+export const heroSummaryMobile = content.heroSummaryMobile ?? content.heroSummary.slice(0, 3);
