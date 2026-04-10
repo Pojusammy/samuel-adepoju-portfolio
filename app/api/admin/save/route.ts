@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 
 import { isAdminAuthenticated } from "@/lib/admin-auth";
-import { saveProjectContent, saveShowcaseContent, saveSiteContent } from "@/lib/admin-content";
+import {
+  deleteProjectContent,
+  saveProjectContent,
+  saveShowcaseContent,
+  saveSiteContent,
+} from "@/lib/admin-content";
 import type { EditableProject, ShowcaseItem, SiteContent } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -13,8 +18,8 @@ export async function POST(request: Request) {
 
   try {
     const { kind, payload } = (await request.json()) as {
-      kind: "site" | "showcase" | "project";
-      payload: SiteContent | ShowcaseItem[] | EditableProject;
+      kind: "site" | "showcase" | "project" | "project-delete";
+      payload: SiteContent | ShowcaseItem[] | EditableProject | { slug: string; title?: string };
     };
 
     if (kind === "site") {
@@ -25,6 +30,11 @@ export async function POST(request: Request) {
     if (kind === "showcase") {
       await saveShowcaseContent(payload as ShowcaseItem[]);
       return NextResponse.json({ message: "Showcase content saved." });
+    }
+
+    if (kind === "project-delete") {
+      await deleteProjectContent(payload as { slug: string; title?: string });
+      return NextResponse.json({ message: "Project removed." });
     }
 
     await saveProjectContent(payload as EditableProject);

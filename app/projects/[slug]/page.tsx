@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 
 import { siteMeta } from "@/data/site";
 import { getAllProjects, getProjectBySlug, getProjectSlugs } from "@/lib/projects";
-import { formatDate, getMediaTypeFromPath } from "@/lib/utils";
+import { formatDate, getMediaTypeFromPath, resolveMediaSrc } from "@/lib/utils";
 
 export async function generateStaticParams() {
   const slugs = await getProjectSlugs();
@@ -89,16 +89,19 @@ export default async function ProjectPage({
             <div className="relative aspect-[16/10]">
               {coverMediaType === "video" ? (
                 <video
-                  src={project.coverImage}
+                  src={resolveMediaSrc(project.coverImage)}
                   title={project.coverAlt ?? project.title}
                   className="h-full w-full object-cover"
                   controls
+                  autoPlay
+                  muted
+                  loop
                   playsInline
                   preload="metadata"
                 />
               ) : (
                 <Image
-                  src={project.coverImage}
+                  src={resolveMediaSrc(project.coverImage)}
                   alt={project.coverAlt ?? project.title}
                   fill
                   priority

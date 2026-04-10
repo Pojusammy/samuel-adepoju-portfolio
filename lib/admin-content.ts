@@ -245,6 +245,57 @@ async function saveToGitHub({ repoPath, content, message, isBase64 }: SaveTarget
   return true;
 }
 
+async function deleteFromGitHub({
+  repoPath,
+  message,
+}: {
+  repoPath: string;
+  message: string;
+}) {
+  const config = getGitHubConfig();
+  if (!config) return false;
+
+  const endpoint = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${repoPath}`;
+  const headers = {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${config.token}`,
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+
+  const existingResponse = await fetch(`${endpoint}?ref=${config.branch}`, { headers, cache: "no-store" });
+
+  if (existingResponse.status === 404) {
+    return true;
+  }
+
+  if (!existingResponse.ok) {
+    throw new Error("Could not fetch the existing GitHub file for deletion.");
+  }
+
+  const existing = (await existingResponse.json()) as { sha?: string };
+
+  if (!existing.sha) {
+    throw new Error("Missing GitHub file SHA for deletion.");
+  }
+
+  const response = await fetch(endpoint, {
+    method: "DELETE",
+    headers,
+    body: JSON.stringify({
+      message,
+      branch: config.branch,
+      sha: existing.sha,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`GitHub delete failed: ${error}`);
+  }
+
+  return true;
+}
+
 async function saveTarget(target: SaveTarget, localPath?: string) {
   const savedRemotely = await saveToGitHub(target);
 
@@ -252,6 +303,27 @@ async function saveTarget(target: SaveTarget, localPath?: string) {
     if (!localPath) throw new Error("Local path missing for fallback save.");
     await fs.mkdir(path.dirname(localPath), { recursive: true });
     await fs.writeFile(localPath, target.isBase64 ? Buffer.from(target.content, "base64") : target.content);
+  }
+}
+
+async function deleteTarget({
+  repoPath,
+  localPath,
+  message,
+}: {
+  repoPath: string;
+  localPath?: string;
+  message: string;
+}) {
+  const deletedRemotely = await deleteFromGitHub({ repoPath, message });
+
+  if (!deletedRemotely && localPath) {
+    await fs.rm(localPath, { force: true });
+    return;
+  }
+
+  if (localPath) {
+    await fs.rm(localPath, { force: true });
   }
 }
 
@@ -325,6 +397,15 @@ export async function saveProjectContent(project: EditableProject) {
     },
     filePath,
   );
+}
+
+export async function deleteProjectContent(project: { slug: string; title?: string }) {
+  const filePath = path.join(PROJECTS_DIR, `${project.slug}.mdx`);
+  await deleteTarget({
+    repoPath: `content/projects/${project.slug}.mdx`,
+    localPath: filePath,
+    message: `Remove project: ${project.title ?? project.slug}`,
+  });
 }
 
 function sanitizePathSegment(value: string) {

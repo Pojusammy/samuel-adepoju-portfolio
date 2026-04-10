@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useMemo, useRef, useState } from "react";
 
 import type { ProjectFrontmatter } from "@/lib/types";
-import { formatListDate, getMediaTypeFromPath } from "@/lib/utils";
+import { formatListDate, getMediaTypeFromPath, resolveMediaSrc } from "@/lib/utils";
 
 export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
   const [hoveredProject, setHoveredProject] = useState<ProjectFrontmatter | null>(null);
@@ -66,7 +66,7 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
               <div className="relative size-[48px] overflow-hidden rounded-full bg-black">
                 {getMediaTypeFromPath(hoveredProject.thumbnail) === "video" ? (
                   <video
-                    src={hoveredProject.thumbnail}
+                    src={resolveMediaSrc(hoveredProject.thumbnail)}
                     title={hoveredProject.thumbnailAlt}
                     className="size-full object-cover"
                     autoPlay
@@ -76,7 +76,7 @@ export function ProjectList({ projects }: { projects: ProjectFrontmatter[] }) {
                   />
                 ) : (
                   <Image
-                    src={hoveredProject.thumbnail}
+                    src={resolveMediaSrc(hoveredProject.thumbnail)}
                     alt={hoveredProject.thumbnailAlt}
                     fill
                     className="object-cover"

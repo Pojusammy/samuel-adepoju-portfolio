@@ -1,3 +1,5 @@
+import { resolveMediaSrc } from "@/lib/utils";
+
 type ContentVideoProps = {
   src: string;
   title?: string;
@@ -10,11 +12,14 @@ export function ContentVideo({ src, title, caption, poster }: ContentVideoProps)
     <figure className="my-10">
       <div className="overflow-hidden rounded-[1.6rem] border border-line bg-background-soft shadow-soft">
         <video
-          src={src}
-          poster={poster}
+          src={resolveMediaSrc(src)}
+          poster={resolveMediaSrc(poster)}
           title={title}
           className="block aspect-[16/10] w-full object-cover"
           controls
+          autoPlay
+          muted
+          loop
           playsInline
           preload="metadata"
         />

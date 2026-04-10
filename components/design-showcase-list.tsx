@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import type { ShowcaseItem } from "@/lib/types";
+import { resolveMediaSrc } from "@/lib/utils";
 
 const showcaseTabs = [
   { key: "mobile-apps", label: "Mobile Apps" },
@@ -225,8 +226,8 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                     >
                       {media?.type === "video" ? (
                         <video
-                          src={media.src}
-                          poster={media.poster}
+                          src={resolveMediaSrc(media.src)}
+                          poster={resolveMediaSrc(media.poster)}
                           aria-label={media.alt}
                           className="h-full w-full object-cover object-center"
                           autoPlay
@@ -237,7 +238,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                         />
                       ) : media?.type === "image" ? (
                         <Image
-                          src={media.src}
+                          src={resolveMediaSrc(media.src)}
                           alt={media.alt}
                           fill
                           className="object-cover object-center"
@@ -326,8 +327,8 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                       if (media.type === "video") {
                         return (
                           <video
-                            src={media.src}
-                            poster={media.poster}
+                            src={resolveMediaSrc(media.src)}
+                            poster={resolveMediaSrc(media.poster)}
                             aria-label={media.alt}
                             className="max-h-[80vh] w-full rounded-[16px] bg-black object-contain"
                             controls
@@ -346,7 +347,7 @@ export function DesignShowcaseList({ items }: { items: ShowcaseItem[] }) {
                         >
                           {selectedImageSize ? (
                             <Image
-                              src={media.src}
+                              src={resolveMediaSrc(media.src)}
                               alt={media.alt}
                               width={selectedImageSize.width}
                               height={selectedImageSize.height}

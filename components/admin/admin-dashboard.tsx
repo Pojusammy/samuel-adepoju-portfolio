@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 
 import type { EditableProject, ProjectContentBlock, ShowcaseItem, SiteContent } from "@/lib/types";
-import { getMediaTypeFromPath } from "@/lib/utils";
+import { getMediaTypeFromPath, resolveMediaSrc } from "@/lib/utils";
 
 type AdminData = {
   site: SiteContent;
@@ -66,6 +66,38 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
     const data = (await response.json()) as { message?: string; error?: string };
     setSaving(false);
     setStatus(data.message ?? data.error ?? "Saved.");
+  }
+
+  async function removeActiveProject() {
+    if (!activeProject) return;
+
+    const projectToRemove = activeProject;
+    setSaving(true);
+    setStatus("");
+
+    const response = await fetch("/api/admin/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        kind: "project-delete",
+        payload: { slug: projectToRemove.slug, title: projectToRemove.title },
+      }),
+    });
+
+    const data = (await response.json()) as { message?: string; error?: string };
+
+    if (!response.ok) {
+      setSaving(false);
+      setStatus(data.error ?? "Could not remove project.");
+      return;
+    }
+
+    const removedIndex = safeActiveProjectIndex;
+    const nextProjects = projects.filter((_, index) => index !== removedIndex);
+    setProjects(nextProjects);
+    setActiveProjectIndex(Math.max(0, Math.min(removedIndex, nextProjects.length - 1)));
+    setSaving(false);
+    setStatus(data.message ?? "Project removed.");
   }
 
   async function uploadImage(formData: FormData) {
@@ -567,11 +599,14 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
               <Card
                 title="Project editor"
                 action={
-                  <SaveButton
-                    disabled={saving}
-                    onClick={() => save("project", activeProject)}
-                    label={saving ? "Saving..." : "Save project"}
-                  />
+                  <div className="flex items-center gap-2">
+                    <SmallButton onClick={removeActiveProject}>Remove project</SmallButton>
+                    <SaveButton
+                      disabled={saving}
+                      onClick={() => save("project", activeProject)}
+                      label={saving ? "Saving..." : "Save project"}
+                    />
+                  </div>
                 }
               >
                 <div className="grid gap-3 md:grid-cols-2">
@@ -930,7 +965,8 @@ export function AdminDashboard({ initialData }: { initialData: AdminData }) {
                     Upload directly inside each media block. Save the project after uploading so the live site picks up the new asset on the next deploy.
                   </div>
                   {renderProjectBlockToolbar("bottom")}
-                  <div className="mt-6 flex justify-end">
+                  <div className="mt-6 flex justify-end gap-2">
+                    <SmallButton onClick={removeActiveProject}>Remove project</SmallButton>
                     <SaveButton
                       disabled={saving}
                       onClick={() => save("project", activeProject)}
@@ -1254,8 +1290,8 @@ function MediaPreview({
     <div className="overflow-hidden rounded-2xl border border-line bg-background-soft">
       {type === "video" ? (
         <video
-          src={src}
-          poster={poster}
+          src={resolveMediaSrc(src)}
+          poster={resolveMediaSrc(poster)}
           title={alt}
           className="block aspect-[16/10] w-full object-cover"
           controls
@@ -1264,7 +1300,7 @@ function MediaPreview({
         />
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={alt} className="block aspect-[16/10] w-full object-cover" />
+        <img src={resolveMediaSrc(src)} alt={alt} className="block aspect-[16/10] w-full object-cover" />
       )}
     </div>
   );
